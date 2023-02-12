@@ -15,7 +15,7 @@
             // $this->old = (int)$input[1];
             // $this->birthday = $input[2];
             // $this->state = $input[3];
-            list($this->name, $this->old, $this->birthday, $this->state) = $input;
+            list($this->name, $this->old, $this->birth, $this->state) = $input;
         }
         
     }
