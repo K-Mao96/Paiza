@@ -23,9 +23,9 @@ class Student {
     }
     
     //changeNameメソッド：生徒の名前を変更する
-    //パラメータ：対象の生徒インスタンス、新しい名前
-    public static function changeName($studentObj, $newName): void {
-        $studentObj->name = $newName;
+    //パラメータ：新しい名前
+    public function changeName(string $newName): void {
+        $this->name = $newName;
     }
  
 }
@@ -75,7 +75,7 @@ foreach ($changeStudentList as $changeStudent) {
     $newName = $changeStudent[1];
     
     //生徒の名前を変更
-    Student::changeName($studentList[$targetIndex], $newName);
+    $studentList[$targetIndex]->changeName($newName);
 }
 
 //出力する
