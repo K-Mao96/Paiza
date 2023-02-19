@@ -19,9 +19,10 @@
          * @param integer $number
          * @param string $name
          */
-        public function __construct(public int $number, public string $name) {
-            
-        }
+        public function __construct (
+            private int $number,
+            private string $name
+        ) {}
         
         //メソッドの定義
         /**
