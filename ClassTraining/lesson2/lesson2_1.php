@@ -89,6 +89,9 @@
                 //出力する
                 echo $output,"\n";
                 break;
+            
+            default:
+                break;
         }
 
     }
