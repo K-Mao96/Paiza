@@ -1,21 +1,41 @@
 <?php
-    
-    //*****************
-    //  Employeeクラス
-    //*****************
+
+/**
+ * piza「クラス・構造体メニュー」
+ * 静的メンバ
+ * STEP: 1 クラスの作成
+ * @link https://paiza.jp/works/mondai/class_primer/class_primer__make_class/edit?language_uid=php
+ */
+
+
+    /**
+     * 従業員クラス
+     */
     class Employee {
 
-        //コンストラクタ
-        //PHP8.xの省略記法で
+        /**
+         * コンストラクタ
+         * PHP8.xの省略記法で
+         * @param integer $number
+         * @param string $name
+         */
         public function __construct(public int $number, public string $name) {
             
         }
         
         //メソッドの定義
+        /**
+         * 従業員番号を返す
+         * @return integer
+         */
         public function getNum(): int {
             return $this->number;
         }
         
+        /**
+         * 従業員名を返す
+         * @return string
+         */
         public function getName(): string {
             return $this->name;
         }
@@ -37,8 +57,10 @@
         //入力を配列に変換
         $input = trim(fgets(STDIN));
         $arrayInput = explode(" ", $input);
+
+        $command = $arrayInput[0];
         
-        switch ($arrayInput[0]) {
+        switch ($command) {
             //入力がmake〜の場合は、インスタンスを作成する
             case 'make':
                 $number = $arrayInput[1];
@@ -68,7 +90,6 @@
                 break;
         }
 
-        
     }
     
 ?>
