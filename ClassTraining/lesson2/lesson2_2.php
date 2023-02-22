@@ -3,8 +3,8 @@
 /**
  * piza「クラス・構造体メニュー」
  * 静的メンバ
- * STEP: 1 クラスの作成
- * @link https://paiza.jp/works/mondai/class_primer/class_primer__make_class/edit?language_uid=php
+ * STEP: 2 コンストラクタ
+ * @link https://paiza.jp/works/mondai/class_primer/class_primer__constructor/edit?language_uid=php
  */
 
 /**
