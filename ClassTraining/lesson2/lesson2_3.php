@@ -23,7 +23,7 @@ class Employee {
         private int $number,
         private string $name
     ) {}
-    
+
     //メソッドの定義
     /**
      * 社員番号を返す
@@ -32,7 +32,7 @@ class Employee {
     public function getNum(): int {
         return $this->number;
     }
-    
+
     /**
      * 社員名を返す
      * @return string
@@ -40,18 +40,26 @@ class Employee {
     public function getName(): string {
         return $this->name;
     }
-    
-    //社員番号を変更する
-    public function changeNum($newNum): void {
+
+    /**
+     * 社員番号を変更する
+     * @param integer $newNum
+     * @return void
+     */
+    public function changeNum(int $newNum): void {
         $this->number = $newNum;
     }
-    
-    //社員名を変更する
-    public function changeName($newName): void {
+
+    /**
+     * 社員名を変更する
+     * @param string $newName
+     * @return void
+     */
+    public function changeName(string $newName): void {
         $this->name = $newName;
     }
-    
-    
+
+
 }
 
 //*****************
@@ -72,6 +80,9 @@ for ($i = 1; $i <= $totalInput; $i++) {
     $arrayInput = explode(" ", $input);
 
     $command = $arrayInput[0];
+
+    //添字は社員番号から1を引いた数
+    $index = $arrayInput[1] - 1;
     
     switch ($command) {
         //入力がmake〜の場合は、インスタンスを作成する
@@ -84,8 +95,6 @@ for ($i = 1; $i <= $totalInput; $i++) {
         
         //入力がgetnum〜の場合は、getnum()を実行する
         case 'getnum':
-            //添字は社員番号から1を引いた数
-            $index = $arrayInput[1] - 1;
             //社員番号を取得する
             $output = $employees[$index]->getNum();
             //出力する
@@ -94,8 +103,6 @@ for ($i = 1; $i <= $totalInput; $i++) {
         
         //入力がgetname〜の場合は、getname()を実行する 
         case 'getname':
-            //添字は社員番号から1を引いた数
-            $index = $arrayInput[1] - 1;
             //社員名を取得する
             $output = $employees[$index]->getName();
             //出力する
@@ -104,8 +111,6 @@ for ($i = 1; $i <= $totalInput; $i++) {
         
         //入力がchange_num〜の場合は、changeNum()を実行する 
         case 'change_num':
-            //添字は社員番号から1を引いた数
-            $index = $arrayInput[1] - 1;
             //新しい社員番号を取得
             $newNum = $arrayInput[2];
             //社員番号を変更する
@@ -114,8 +119,6 @@ for ($i = 1; $i <= $totalInput; $i++) {
             
         //入力がchange_num〜の場合は、changeNum()を実行する 
         case 'change_name':
-            //添字は社員番号から1を引いた数
-            $index = $arrayInput[1] - 1;
             //新しい社員番号を取得
             $newName = $arrayInput[2];
             //社員番号を変更する
