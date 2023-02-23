@@ -75,12 +75,7 @@ class CustomerAdult extends Customer {
 }
 
 //入力を取得
-$input = trim(fgets(STDIN));
-$input = explode(" ", $input);
-    //お客の人数Nを取得
-    $totalCustomer = $input[0];
-    //注文の回数Kを取得
-    $totalOrder = $input[1];
+fscanf(STDIN, "%d %d", $totalCustomer, $totalOrder);
 
 //インスタンス化したお客の情報を配列で管理
 $customers = [];
