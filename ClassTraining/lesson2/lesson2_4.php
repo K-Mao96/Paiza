@@ -8,7 +8,17 @@
  */
 
 
-//お客クラス(20歳未満)
+/**
+ * Chat GPTのリファクタリングを反映
+ * CustomerAdultクラスの$alcoholFlgをプロパティ宣言時に初期化するように変更
+ * CustomerAdultクラスのsumPriceメソッド内の条件式をわかりやすく変更
+ */
+
+
+
+/**
+ * 顧客クラス(20歳未満)
+ */
 class Customer {
     //プロパティを定義
     //アルコールの注文種別
@@ -24,9 +34,7 @@ class Customer {
     public function sumPrice (string $orderType, int $price): void {
         //注文種別と金額を受け取る
         //注文種別がアルコールでないならば、合計金額に足し上げていく
-        if ($orderType === self::ALCOHOL_TYPE) {
-            return;
-        } else {
+        if ($orderType !== self::ALCOHOL_TYPE) {
             $this->totalCost += $price;
         }
     }
@@ -37,12 +45,12 @@ class Customer {
     }   
 }
 
-//お客クラス（20歳以上）
-//お客クラス(20歳未満)を継承
+//顧客クラス（20歳以上）
+//顧客クラス(20歳未満)を継承
 class CustomerAdult extends Customer {
     //プロパティ
         //アルコール注文フラグ
-        private bool $alcoholFlg;
+        private bool $alcoholFlg = false;
         //割引金額
         private const DISCOUNT = 200;
         //食事の注文種別
@@ -52,11 +60,9 @@ class CustomerAdult extends Customer {
     public function __construct(int $age) {
         //親クラスのコンストラクタを実行
         parent::__construct($age);
-        //アルコール注文フラグをリセット
-        $this->alcoholFlg = false;
     }
     
-    //メソッドを変更 or 追加
+    //sumPriceメソッドをオーバーライド
     public function sumPrice (string $orderType, int $price): void {
         //アルコールが注文されたら、注文フラグをtrueにする（1回だけ）
         if (!$this->alcoholFlg && $orderType === self::ALCOHOL_TYPE) {
@@ -77,7 +83,7 @@ class CustomerAdult extends Customer {
 //入力を取得
 fscanf(STDIN, "%d %d", $totalCustomer, $totalOrder);
 
-//インスタンス化したお客の情報を配列で管理
+//インスタンス化した顧客の情報を配列で管理
 $customers = [];
 
 //N回繰り返す
@@ -100,14 +106,14 @@ for ($i = 0; $i < $totalCustomer; $i++) {
 for ($i = 0; $i < $totalOrder; $i++) {
     //入力を取得する
     fscanf(STDIN, "%d %s %d", $customerNum, $orderType, $price);
-    //お客のインスタンスに紐づく添字
+    //顧客のインスタンスに紐づく添字
     $index = $customerNum - 1;
-    //該当するお客番号のインスタンスでメソッドを実行する
+    //該当する顧客番号のインスタンスでメソッドを実行する
     $customer = $customers[$index];
     $customer->sumPrice($orderType, $price);
 }
 
-//お客ごとの合計金額を出力する
+//顧客ごとの合計金額を出力する
 foreach ($customers as $customer) {
     $totalCost = $customer->getTotalCost();
     echo $totalCost . "\n";
