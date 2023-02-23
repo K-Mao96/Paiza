@@ -83,7 +83,7 @@ $customers = [];
 //N回繰り返す
 for ($i = 0; $i < $totalCustomer; $i++) {
     //年齢を取得する
-    $age = trim(fgets(STDIN));
+    fscanf(STDIN, "%d", $age);
     //インスタンス化
     if ($age < 20) {
         //20歳未満なら
@@ -99,12 +99,9 @@ for ($i = 0; $i < $totalCustomer; $i++) {
 //K回繰り返す
 for ($i = 0; $i < $totalOrder; $i++) {
     //入力を取得する
-    $input = trim(fgets(STDIN));
-    $input = explode(" ", $input);
-    //お客の番号, 注文種別, 金額
-    $index       = $input[0] - 1;
-    $orderType   = $input[1];
-    $price       = $input[2];
+    fscanf(STDIN, "%d %s %d", $customerNum, $orderType, $price);
+    //お客のインスタンスに紐づく添字
+    $index = $customerNum - 1;
     //該当するお客番号のインスタンスでメソッドを実行する
     $customer = $customers[$index];
     $customer->sumPrice($orderType, $price);
