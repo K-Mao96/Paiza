@@ -17,52 +17,78 @@
 
 
 /**
- * 顧客クラス(20歳未満)
+ * 顧客クラス
  */
 class Customer {
     //プロパティを定義
     //アルコールの注文種別
     final protected const ALCOHOL_TYPE = 'alcohol';
     
-    //コンストラクタを定義
+    /**
+     * コンストラクタ
+     * @param integer $age 顧客の年齢
+     * @param integer $totalCost 合計金額
+     */
     public function __construct(
         protected int $age,
         protected int $totalCost = 0,
     ) {}
-    
-    //メソッドを定義
+
+
+    /**
+     * 合計金額を計算する
+     *
+     * @param string $orderType 注文種別
+     * @param integer $price 価格
+     * @return void
+     */
     public function sumPrice (string $orderType, int $price): void {
-        //注文種別と金額を受け取る
         //注文種別がアルコールでないならば、合計金額に足し上げていく
         if ($orderType !== self::ALCOHOL_TYPE) {
             $this->totalCost += $price;
         }
     }
     
+    /**
+     * 合計金額を返す
+     * @return integer
+     */
     public function getTotalCost(): int {
-        //合計金額を返す
         return $this->totalCost;
     }   
 }
 
-//顧客クラス（20歳以上）
-//顧客クラス(20歳未満)を継承
+
+/**
+ * 顧客クラス（20歳以上）
+ */
 class CustomerAdult extends Customer {
-    //プロパティ
-        //アルコール注文フラグ
-        private bool $alcoholFlg = false;
-        //割引金額
-        private const DISCOUNT = 200;
-        //食事の注文種別
-        private const FOOD_TYPE = 'food';
+    /**
+     * アルコール注文フラグ
+     * @var boolean
+     */
+    private bool $alcoholFlg = false;
+    //割引金額
+    private const DISCOUNT = 200;
+    //食事の注文種別
+    private const FOOD_TYPE = 'food';
         
-    //コンストラクタを定義
+    /**
+     * コンストラクタ
+     * @param integer $age
+     */
     public function __construct(int $age) {
         //親クラスのコンストラクタを実行
         parent::__construct($age);
     }
     
     //sumPriceメソッドをオーバーライド
+    /**
+     * 合計金額を計算する
+     * @param string $orderType 注文種別
+     * @param integer $price 価格
+     * @return void
+     */
     public function sumPrice (string $orderType, int $price): void {
         //アルコールが注文されたら、注文フラグをtrueにする（1回だけ）
         if (!$this->alcoholFlg && $orderType === self::ALCOHOL_TYPE) {
