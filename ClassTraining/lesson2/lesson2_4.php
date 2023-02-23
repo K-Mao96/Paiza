@@ -22,7 +22,7 @@
 class Customer {
     //プロパティを定義
     //アルコールの注文種別
-    protected const ALCOHOL_TYPE = 'alcohol';
+    final protected const ALCOHOL_TYPE = 'alcohol';
     
     //コンストラクタを定義
     public function __construct(
