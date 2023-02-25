@@ -8,6 +8,12 @@
  */
 
 /**
+ * ChatGPTによるリファクタリングポイント
+ * Customerクラス：takeAlcohol() メソッドの引数にデフォルト値を設定し、コードの重複を削除した。
+ * 不要な if 文を削除し、可読性を高めた（修正後はさんこう演算子を使用）
+ */
+
+/**
  * 顧客クラス
  */
 class Customer {
@@ -47,9 +53,7 @@ class Customer {
      * 
      * @return void
      */
-    public function takeAlcohol () {
-        return;
-    }
+    public function takeAlcohol (int $price = CustomerAdult::BEER_PRICE) {}
 
     /**
      * ソフトドリンクが注文された時の処理
@@ -99,7 +103,7 @@ class CustomerAdult extends Customer {
     //ビールの注文種別
     public const BEER_TYPE = 0;
     //ビールの値段
-    private const BEER_PRICE = 500;
+    final protected const BEER_PRICE = 500;
     
 
 
@@ -147,13 +151,7 @@ for ($i = 0; $i < $totalCustomer; $i++) {
     //年齢を取得する
     fscanf(STDIN, "%d", $age);
     //インスタンス化
-    if ($age < 20) {
-        //20歳未満なら
-        $customer = new Customer($age);
-    } else {
-        //20歳以上なら
-        $customer = new CustomerAdult($age);
-    }
+    $customer = ($age < 20) ? new Customer($age) : new CustomerAdult($age);
     //配列に追加
     $customers[] = $customer;
 }
