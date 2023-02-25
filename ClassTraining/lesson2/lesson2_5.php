@@ -3,29 +3,24 @@
 /**
  * piza「クラス・構造体メニュー」
  * 静的メンバ
- * STEP: 4 クラスの継承
- * @link https://paiza.jp/works/mondai/class_primer/class_primer__inheritance/edit?language_uid=php
+ * STEP: 5 デフォルト引数
+ * @link https://paiza.jp/works/mondai/class_primer/class_primer__set_default/edit?language_uid=php&t=77341a8ecf4e98235421e830fc9fa503
  */
-
-
-/**
- * Chat GPTのリファクタリングを反映
- * CustomerAdultクラスの$alcoholFlgをプロパティ宣言時に初期化するように変更
- * CustomerAdultクラスのsumPriceメソッド内の条件式をわかりやすく変更
- */
-
-
 
 /**
  * 顧客クラス
  */
 class Customer {
-    //プロパティを定義
-    //アルコールの注文種別
-    final protected const ALCOHOL_TYPE = ['alcohol', 0];
+
+    //ソフトドリンクの注文種別
+    final public const SOFT_DRINK_TYPE = 'softdrink';
+    //食事の注文種別
+    final public const FOOD_TYPE = 'food';
+    
     
     /**
      * コンストラクタ
+     * 
      * @param integer $age 顧客の年齢
      * @param integer $totalCost 合計金額
      */
@@ -42,15 +37,43 @@ class Customer {
      * @param integer $price 価格
      * @return void
      */
-    public function sumPrice (string $orderType, ?int $price): void {
-        //注文種別がアルコールでないならば、合計金額に足し上げていく
-        if (!in_array($orderType, self::ALCOHOL_TYPE)) {
-            $this->totalCost += $price;
-        }
+    public function sumPrice (int $price): void {
+        //合計金額に足し上げていく
+        $this->totalCost += $price;
+    }
+    
+    /**
+     * アルコールが注文された時の処理（何もしない）
+     * 
+     * @return void
+     */
+    public function takeAlcohol () {
+        return;
+    }
+
+    /**
+     * ソフトドリンクが注文された時の処理
+     * 
+     * @param integer $price  価格
+     * @return void
+     */
+    public function takeSoftDrink (int $price) {
+        $this->sumPrice($price);
+    }
+
+    /**
+     * 食事が注文された時の処理
+     * 
+     * @param integer $price 価格
+     * @return void
+     */
+    public function takeFood (int $price) {
+        $this->sumPrice($price);
     }
     
     /**
      * 合計金額を返す
+     * 
      * @return integer
      */
     public function getTotalCost(): int {
@@ -65,51 +88,51 @@ class Customer {
 class CustomerAdult extends Customer {
     /**
      * アルコール注文フラグ
+     * 
      * @var boolean
      */
     private bool $alcoholFlg = false;
-    //割引金額
+    //アルコールの注文種別
+    public const ALCOHOL_TYPE = 'alcohol';
+    //アルコール注文による割引金額
     private const DISCOUNT = 200;
-    //食事の注文種別
-    private const FOOD_TYPE = 'food';
+    //ビールの注文種別
+    public const BEER_TYPE = 0;
     //ビールの値段
     private const BEER_PRICE = 500;
-        
-    /**
-     * コンストラクタ
-     * @param integer $age
-     */
-    public function __construct(int $age) {
-        //親クラスのコンストラクタを実行
-        parent::__construct($age);
-    }
     
-    //sumPriceメソッドをオーバーライド
+
+
     /**
-     * 合計金額を計算する
-     * @param string $orderType 注文種別
-     * @param integer $price 価格
+     * アルコールが注文された時の処理（オーバーライド）
+     *
+     * @param [type] $price 価格
      * @return void
      */
-    public function sumPrice (string $orderType, ?int $price): void {
-        //アルコールが注文されたら、注文フラグをtrueにする（1回だけ）
-        if (!$this->alcoholFlg && in_array($orderType, self::ALCOHOL_TYPE)) {
+    public function takeAlcohol (int $price = self::BEER_PRICE) {
+        //アルコール注文フラグを立てる(1回だけ)
+        if (!$this->alcoholFlg) {
             $this->alcoholFlg = true;
         }
         
-        //ビールが注文された場合は、ビールの金額を設定する
-        if ($this->alcoholFlg && $price === null) {
-            $price = self::BEER_PRICE;
-        }
-        
-        //合計金額に足し上げる
-        $this->totalCost += $price;
-        
-        //アルコール注文フラグがtrueかつ注文種別が「食事」なら、割引を適用する
-        if ($this->alcoholFlg && $orderType === self::FOOD_TYPE) {
-            $this->totalCost -= self::DISCOUNT;
-        }
+        $this->sumPrice($price);
     }
+
+    /**
+     * 食事が注文された時の処理（オーバーライド）
+     *
+     * @param integer $price 価格
+     * @return void
+     */
+    public function takeFood (int $price) {
+        //アルコール注文フラグが立っていたら、割引を適用する
+        if ($this->alcoholFlg) {
+            $price -= self::DISCOUNT;
+        }
+        $this->sumPrice($price);
+    }
+    
+
         
 }
 
@@ -140,16 +163,47 @@ for ($i = 0; $i < $totalOrder; $i++) {
     //入力を取得する
     $input = trim(fgets(STDIN));
     $input = explode(" ", $input);
-    //お客の番号, 注文種別, 金額
+    //顧客の番号, 注文種別
     $customerNum = $input[0];
     $orderType   = $input[1];
-    //ビールが注文された場合は金額は与えられないので、nullを代入する
-    $price       = $input[2] ?? null;
-    //顧客のインスタンスに紐づく添字
+    
+    //顧客のインスタンスの添字を取得
     $index = $customerNum - 1;
-    //該当する顧客番号のインスタンスでメソッドを実行する
+    
+    //顧客のインスタンスを取得
     $customer = $customers[$index];
-    $customer->sumPrice($orderType, $price);
+    
+
+    switch ($orderType) {
+        //ビールが注文された場合
+        case CustomerAdult::BEER_TYPE:
+            $customer->takeAlcohol();
+            break;
+        
+        //その他のアルコールが注文された場合
+        case CustomerAdult::ALCOHOL_TYPE:
+            $price = $input[2];
+            $customer->takeAlcohol($price);
+            break;
+        
+        //ソフトドリンクが注文された場合
+        case Customer::SOFT_DRINK_TYPE:
+            $price = $input[2];
+            $customer->takeSoftDrink($price);
+            break;
+            
+        //食事が注文された場合
+        case Customer::FOOD_TYPE:
+            $price = $input[2];
+            $customer->takeFood($price);
+            break;
+        
+        //許可されていない入力の場合
+        default:
+            echo 'invalid input'."\n";
+            break;
+    }
+
 
 }
 
