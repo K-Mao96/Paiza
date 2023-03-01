@@ -50,6 +50,7 @@ class Customer {
     /**
      * アルコールが注文された時の処理（何もしない）
      * 
+     * @param integer $price 価格
      * @return void
      */
     public function takeAlcohol (int $price = CustomerAdult::BEER_PRICE) {}
@@ -60,7 +61,7 @@ class Customer {
      * @param integer $price  価格
      * @return void
      */
-    public function takeSoftDrink (int $price) {
+    public function takeSoftDrink (int $price): void {
         $this->sumPrice($price);
     }
 
@@ -70,7 +71,7 @@ class Customer {
      * @param integer $price 価格
      * @return void
      */
-    public function takeFood (int $price) {
+    public function takeFood (int $price): void {
         $this->sumPrice($price);
     }
     
@@ -128,10 +129,10 @@ class CustomerAdult extends Customer {
     /**
      * アルコールが注文された時の処理（オーバーライド）
      *
-     * @param [type] $price 価格
+     * @param integer $price 価格
      * @return void
      */
-    public function takeAlcohol (int $price = self::BEER_PRICE) {
+    public function takeAlcohol (int $price = self::BEER_PRICE): void {
         //アルコール注文フラグを立てる(1回だけ)
         if (!$this->alcoholFlg) {
             $this->alcoholFlg = true;
@@ -146,7 +147,7 @@ class CustomerAdult extends Customer {
      * @param integer $price 価格
      * @return void
      */
-    public function takeFood (int $price) {
+    public function takeFood (int $price): void {
         //アルコール注文フラグが立っていたら、割引を適用する
         if ($this->alcoholFlg) {
             $price -= self::DISCOUNT;
