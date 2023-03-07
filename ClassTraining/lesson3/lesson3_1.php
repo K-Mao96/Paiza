@@ -1,13 +1,53 @@
 <?php
 
-    class Maiz {
-        
+    /**
+     * 地点クラス
+     */
+    class Position {
         //道の種類
         public const ROOT_TYPE_1 = 1;
         public const ROOT_TYPE_2 = 2;
+
+        //アルファベット
+        private string $alphabet;
+
+        //道1の行き先
+        private int $direction1;
+
+        //道2の行き先
+        private int $direction2;
         
-        //全ての地点の情報
-        private $positions = [];
+
+        //地点の情報をセットする
+        public function __construct(string $alphabet, int $direction1, int $direction2)
+        {
+            $this->alphabet = $alphabet;
+            $this->direction1 = $direction1;
+            $this->direction2 = $direction2;
+        }
+
+        // アルファベットを取得する
+        public function getAlphabet(): string {
+            return $this->alphabet;
+        }
+
+        //道の行き先を取得する
+        public function getDirection(int $selectedRoot): int {
+            return $selectedRoot === self::ROOT_TYPE_1 ? $this->direction1 : $this->direction2;
+        }
+
+
+    }
+
+
+    /**
+     * 迷路クラス
+     */
+    class Maiz {
+
+        // 全ての地点の情報
+        private array $positions = [];
+
         //呪文
         private string $incantation = '';
         
@@ -15,16 +55,10 @@
         //現在地を初期化する
         public function __construct(private int $currentPosition) 
         {}
-        
-        //全ての地点の情報をセットする
-        public function setPositions(int $positionNum, string $alphabet, int $direction1, int $direction2): void {
-            $positionInfo = [
-                 'alphabet'   => $alphabet,
-                 self::ROOT_TYPE_1 => $direction1,
-                 self::ROOT_TYPE_2 => $direction2,
-            ];
-         
-            $this->positions[$positionNum] = $positionInfo;
+
+        // 全ての地点の情報をセットする
+        public function setPosition(int $positionNum, Position $position): void {
+            $this->positions[$positionNum] = $position;
         }
         
         //現在地を取得する
@@ -33,9 +67,8 @@
         }
         
         //選択した道の行き先を取得する
-        public function getNextPosition(int $selectedRoot) {
-            $nextPosition = $this->positions[$this->currentPosition][$selectedRoot];
-            return $nextPosition;
+        public function getNextPosition(int $selectedRoot): int {
+            return $this->positions[$this->currentPosition]->getDirection($selectedRoot);
         }
         
         //道を進める
@@ -43,9 +76,9 @@
             $this->currentPosition = $nextPosition;
         }
         
-        //呪文をつなげる
-        public function makeIncantation(int $currentPosition): void {
-            $this->incantation .= $this->positions[$currentPosition]['alphabet'];
+        // 現在地のアルファベットを呪文に追加する
+        public function addAlphabetToIncantation(): void {
+            $this->incantation .= $this->positions[$this->currentPosition]->getAlphabet();
         }
         
         //呪文を唱える
@@ -61,12 +94,15 @@
     //迷路をインスタンス化する
     $maiz = new Maiz($currentPosition);
 
+    $positions = [];
     //全ての地点の情報を取得する
     for ($positionNum = 1; $positionNum <= $positionCount; $positionNum ++) {
          //地点のアルファベット、 道1の行き先、道2の行き先を取得する
          fscanf(STDIN, "%s %d %d", $alphabet, $direction1, $direction2);
-         $maiz->setPositions($positionNum, $alphabet, $direction1, $direction2);
+         $position = new Position($alphabet, $direction1, $direction2);
+         $maiz->setPosition($positionNum, $position);
     }
+
 
     
     //移動の数だけ繰り返す（スタート地点からなので、0から始める）
@@ -74,7 +110,7 @@
         //現在地を取得する
         $currentPosition = $maiz->getCurrentPosition();
         //現在地のアルファベットを、呪文の変数に文字列結合する
-        $maiz->makeIncantation($currentPosition);
+        $maiz->addAlphabetToIncantation($currentPosition);
         
         //ゴールに到着していない場合は、次の地点に進む
         if ($k < $moveCount) {
