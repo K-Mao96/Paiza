@@ -5,8 +5,8 @@
      */
     class Position {
         //道の種類
-        public const ROOT_TYPE_1 = 1;
-        public const ROOT_TYPE_2 = 2;
+        private const ROOT_TYPE_1 = 1;
+        private const ROOT_TYPE_2 = 2;
 
         //アルファベット
         private string $alphabet;
@@ -32,8 +32,20 @@
         }
 
         //道の行き先を取得する
-        public function getDirection(int $selectedRoot): int {
-            return $selectedRoot === self::ROOT_TYPE_1 ? $this->direction1 : $this->direction2;
+        public function getDirection(int $rootType): int {
+
+            switch ($rootType) {
+                case self::ROOT_TYPE_1:
+                    $direction = $this->direction1;
+                    break;
+                case self::ROOT_TYPE_2:
+                    $direction = $this->direction2;
+                    break;
+                default:
+                    break;
+            }
+
+            return $direction;
         }
 
 
@@ -67,8 +79,8 @@
         }
         
         //選択した道の行き先を取得する
-        public function getNextPosition(int $selectedRoot): int {
-            return $this->positions[$this->currentPosition]->getDirection($selectedRoot);
+        public function getNextPosition(int $rootType): int {
+            return $this->positions[$this->currentPosition]->getDirection($rootType);
         }
         
         //道を進める
@@ -94,7 +106,6 @@
     //迷路をインスタンス化する
     $maiz = new Maiz($currentPosition);
 
-    $positions = [];
     //全ての地点の情報を取得する
     for ($positionNum = 1; $positionNum <= $positionCount; $positionNum ++) {
          //地点のアルファベット、 道1の行き先、道2の行き先を取得する
@@ -107,22 +118,19 @@
     
     //移動の数だけ繰り返す（スタート地点からなので、0から始める）
     for ($k = 0; $k <= $moveCount; $k ++) {
-        //現在地を取得する
-        $currentPosition = $maiz->getCurrentPosition();
         //現在地のアルファベットを、呪文の変数に文字列結合する
-        $maiz->addAlphabetToIncantation($currentPosition);
+        $maiz->addAlphabetToIncantation();
         
         //ゴールに到着していない場合は、次の地点に進む
         if ($k < $moveCount) {
             //選択した道の番号を取得する
-            fscanf(STDIN, "%d", $selectedRoot);
+            fscanf(STDIN, "%d", $rootType);
             //次の地点を求める
-            $nextPosition = $maiz->getNextPosition($selectedRoot);
+            $nextPosition = $maiz->getNextPosition($rootType);
             //現在地を移動する
             $maiz->updatePosition($nextPosition);
         }
     }
-    
 
     //呪文と改行を出力する
     echo $maiz->getIncantation() . "\n";
