@@ -4,34 +4,63 @@
      * 地点クラス
      */
     class Position {
-        //道の種類
+        /**
+         * 1つの地点から延びている道の種類
+         */
         private const ROOT_TYPE_1 = 1;
         private const ROOT_TYPE_2 = 2;
 
-        //アルファベット
+        /**
+         * 地点のアルファベット
+         * 
+         * @var string
+         */
         private string $alphabet;
 
-        //道1の行き先
+        /**
+         * 道1の行き先地点番号
+         *
+         * @var integer
+         */
         private int $direction1;
 
-        //道2の行き先
+        /**
+         * 道2の行き先地点番号
+         *
+         * @var integer
+         */
         private int $direction2;
         
 
-        //地点の情報をセットする
+        /**
+         * コンストラクタ
+         *
+         * @param string  $alphabet   地点のアルファベット
+         * @param integer $direction1 道1の行き先地点番号
+         * @param integer $direction2 道2の行き先地点番号
+         */
         public function __construct(string $alphabet, int $direction1, int $direction2)
         {
-            $this->alphabet = $alphabet;
+            $this->alphabet   = $alphabet;
             $this->direction1 = $direction1;
             $this->direction2 = $direction2;
         }
 
-        // アルファベットを取得する
+        /**
+         * 地点のアルファベットを取得する
+         *
+         * @return string
+         */
         public function getAlphabet(): string {
             return $this->alphabet;
         }
 
-        //道の行き先を取得する
+        /**
+         * 道の行き先を取得する
+         *
+         * @param integer $rootType 選択された道の種類
+         * @return integer
+         */
         public function getDirection(int $rootType): int {
 
             switch ($rootType) {
@@ -57,43 +86,84 @@
      */
     class Maiz {
 
-        // 全ての地点の情報
+        /**
+         * 全ての地点の情報
+         *
+         * @var array
+         */
         private array $positions = [];
 
-        //呪文
+        /**
+         * 呪文
+         *
+         * @var string
+         */
         private string $incantation = '';
         
-        //コンストラクタ
-        //現在地を初期化する
+
+        /**
+         * コンストラクタ
+         *
+         * 現在地を初期化する
+         * @param integer $currentPosition 現在地
+         */
         public function __construct(private int $currentPosition) 
         {}
 
-        // 全ての地点の情報をセットする
+        /**
+         * 全ての地点の情報をセットする
+         *
+         * @param integer  $positionNum 地点番号
+         * @param Position $position    地点の情報
+         * @return void
+         */
         public function setPosition(int $positionNum, Position $position): void {
             $this->positions[$positionNum] = $position;
         }
         
-        //現在地を取得する
+        /**
+         * 現在地を取得する
+         *
+         * @return integer
+         */
         public function getCurrentPosition(): int {
             return $this->currentPosition;
         }
-        
-        //選択した道の行き先を取得する
+
+        /**
+         * 選択した道の行き先を取得する
+         *
+         * @param  integer $rootType 選択した道の番号
+         * @return integer
+         */
         public function getNextPosition(int $rootType): int {
             return $this->positions[$this->currentPosition]->getDirection($rootType);
         }
-        
-        //道を進める
+
+        /**
+         * 道を進める
+         *
+         * @param integer $nextPosition 次の行き先となる地点の番号
+         * @return void
+         */
         public function updatePosition(int $nextPosition): void {
             $this->currentPosition = $nextPosition;
         }
-        
-        // 現在地のアルファベットを呪文に追加する
+
+        /**
+         * 現在地のアルファベットを呪文に追加する
+         *
+         * @return void
+         */
         public function addAlphabetToIncantation(): void {
             $this->incantation .= $this->positions[$this->currentPosition]->getAlphabet();
         }
-        
-        //呪文を唱える
+
+        /**
+         * 呪文を唱える
+         *
+         * @return string
+         */
         public function getIncantation(): string {
             return $this->incantation;
         }
