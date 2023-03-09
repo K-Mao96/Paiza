@@ -84,7 +84,7 @@
     /**
      * 迷路クラス
      */
-    class Maiz {
+    class Maze {
 
         /**
          * 全ての地点の情報
@@ -174,14 +174,14 @@
     fscanf(STDIN, "%d %d %d", $positionCount, $moveCount, $currentPosition);
     
     //迷路をインスタンス化する
-    $maiz = new Maiz($currentPosition);
+    $maze = new Maze($currentPosition);
 
     //全ての地点の情報を取得する
     for ($positionNum = 1; $positionNum <= $positionCount; $positionNum ++) {
          //地点のアルファベット、 道1の行き先、道2の行き先を取得する
          fscanf(STDIN, "%s %d %d", $alphabet, $direction1, $direction2);
          $position = new Position($alphabet, $direction1, $direction2);
-         $maiz->setPosition($positionNum, $position);
+         $maze->setPosition($positionNum, $position);
     }
 
 
@@ -189,20 +189,20 @@
     //移動の数だけ繰り返す（スタート地点からなので、0から始める）
     for ($k = 0; $k <= $moveCount; $k ++) {
         //現在地のアルファベットを、呪文の変数に文字列結合する
-        $maiz->addAlphabetToIncantation();
+        $maze->addAlphabetToIncantation();
         
         //ゴールに到着していない場合は、次の地点に進む
         if ($k < $moveCount) {
             //選択した道の番号を取得する
             fscanf(STDIN, "%d", $rootType);
             //次の地点を求める
-            $nextPosition = $maiz->getNextPosition($rootType);
+            $nextPosition = $maze->getNextPosition($rootType);
             //現在地を移動する
-            $maiz->updatePosition($nextPosition);
+            $maze->updatePosition($nextPosition);
         }
     }
 
     //呪文と改行を出力する
-    echo $maiz->getIncantation() . "\n";
+    echo $maze->getIncantation() . "\n";
      
 ?>
