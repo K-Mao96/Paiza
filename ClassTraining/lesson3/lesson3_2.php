@@ -78,23 +78,9 @@
         public function getLuck() {
             return $this->luck;
         }
-    }
-
-    //イベントクラス
-    class Event {
-
-        //全ての勇者の情報を持つ配列
-        public static array $braves = [];
-
-        //勇者の情報をセットする
-        public static function setBrave(int $braveId, Brave $brave)
-        {
-            self::$braves[$braveId] = $brave;
-        }
 
         //levelup h a d s c f
-        public static function levelUp(
-            int $braveId,
+        public function levelUpEvent(
             int $physicalStrength,
             int $offensivePower,
             int $defense,
@@ -103,44 +89,44 @@
             int $luck
             )
         {
-            $brave = self::$braves[$braveId];
-            $brave->levelUp();
-            $brave->physicalStrengthUP($physicalStrength);
-            $brave->offensivePowerUp($offensivePower);
-            $brave->defenseUp($defense);
-            $brave->agilityUp($agility);
-            $brave->clevernessUp($cleverness);
-            $brave->luckUp($luck);
+            $this->levelUp();
+            $this->physicalStrengthUP($physicalStrength);
+            $this->offensivePowerUp($offensivePower);
+            $this->defenseUp($defense);
+            $this->agilityUp($agility);
+            $this->clevernessUp($cleverness);
+            $this->luckUp($luck);
         }
 
         //muscle_training h a
-        public static function muscleTraining(int $braveId, int $physicalStrength, int $offensivePower) {
-            self::$braves[$braveId]->physicalStrengthUP($physicalStrength);
-            self::$braves[$braveId]->offensivePowerUp($offensivePower);
+        public function muscleTrainingEvent(int $physicalStrength, int $offensivePower) {
+            $this->physicalStrengthUP($physicalStrength);
+            $this->offensivePowerUp($offensivePower);
         }
 
         //running d s
-        public static function running(int $braveId, int $defense, int $agility) {
-            self::$braves[$braveId]->defenseUp($defense);
-            self::$braves[$braveId]->agilityUp($agility);
+        public function runningEvent(int $defense, int $agility) {
+            $this->defenseUp($defense);
+            $this->agilityUp($agility);
         }
 
         //study c
-        public static function study(int $braveId, int $cleverness) {
-            self::$braves[$braveId]->clevernessUp($cleverness);
+        public function studyEvent(int $cleverness) {
+            $this->clevernessUp($cleverness);
         }
 
         //pray f
-        public static function pray(int $braveId, int $luck) {
-            self::$braves[$braveId]->luckUp($luck);
+        public function prayEvent(int $luck) {
+            $this->luckUp($luck);
         }
-        
     }
+
 
     //勇者の人数、起こるイベントの回数を取得する
     fscanf(STDIN, "%d %d", $braveCount, $eventCount);
 
     //全ての勇者をインスタンス化する
+    $braves = [];
     for ($braveId = 1; $braveId <= $braveCount; $braveId++) {
         fscanf(
                 STDIN, 
@@ -163,7 +149,7 @@
                     $cleverness,
                     $luck
                 );
-        Event::setBrave($braveId, $brave);
+        $braves[$braveId] = $brave;
         
     }
 
@@ -174,6 +160,9 @@
         $arrayInput = explode(" ", $input);
         $braveId = $arrayInput[0];
         $event = $arrayInput[1];
+
+        //該当の勇者インスタンス
+        $brave = $braves[$braveId];
         
         switch ($event) {
             case 'levelup':
@@ -183,35 +172,35 @@
                 $agility = $arrayInput[5];
                 $cleverness = $arrayInput[6];
                 $luck = $arrayInput[7];
-                Event::levelUp($braveId,$physicalStrength, $offensivePower, $defense, $agility, $cleverness, $luck);
+                $brave->levelUpEvent($physicalStrength, $offensivePower, $defense, $agility, $cleverness, $luck);
                 break;
 
             case 'muscle_training':
                 $physicalStrength = $arrayInput[2];
                 $offensivePower = $arrayInput[3];
-                Event::muscleTraining($braveId, $physicalStrength, $offensivePower);
+                $brave->muscleTrainingEvent($physicalStrength, $offensivePower);
                 break;
 
             case 'running':
                 $defense = $arrayInput[2];
                 $agility = $arrayInput[3];
-                Event::running($braveId, $defense, $agility);
+                $brave->runningEvent($defense, $agility);
                 break;
 
             case 'study':
                 $cleverness = $arrayInput[2];
-                Event::study($braveId, $cleverness);
+                $brave->studyEvent($cleverness);
                 break;
             case 'pray':
                 $luck = $arrayInput[2];
-                Event::pray($braveId, $luck);
+                $brave->prayEvent($luck);
                 break;
         }
 
     }
 
     //全ての勇者のステータスを出力する
-    foreach(Event::$braves as $braveId => $brave) {
+    foreach($braves as $braveId => $brave) {
         if ($braveId >= 2) {
             echo "\n";
         }
