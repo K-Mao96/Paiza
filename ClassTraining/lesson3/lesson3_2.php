@@ -1,4 +1,11 @@
 <?php
+/**
+ * piza「クラス・構造体メニュー」
+ * ロボットの暴走
+ * STEP: 2 RPG
+ * @link https://paiza.jp/works/mondai/class_primer/class_primer__heros/edit?language_uid=php&t=059ab8da1b21929d4788f9ce3b033efa
+ */
+
 
     /**
      * 勇者クラス
