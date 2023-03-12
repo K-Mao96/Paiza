@@ -1,5 +1,12 @@
 <?php
 
+/**
+ * piza「クラス・構造体メニュー」
+ * ロボットの暴走
+ * STEP: 1 出口のない迷路
+ * @link https://paiza.jp/works/mondai/class_primer/class_primer__closed_maze/edit?language_uid=php
+ */
+
     /**
      * 地点クラス
      */
