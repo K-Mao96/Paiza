@@ -166,16 +166,15 @@
                     $player_2->attack($powerNum_2, $player_1);
                 }
             }
-        } elseif (get_class($player_1->moves[$powerNum_1]) == 'AttackMove' && get_class($player_2->moves[$powerNum_2]) == 'StrengthenMove') {
-            $player_2->strengthen($powerNum_2);
-            $player_1->attack($powerNum_1, $player_2);
-            
-        } elseif (get_class($player_1->moves[$powerNum_1]) == 'StrengthenMove' && get_class($player_2->moves[$powerNum_2]) == 'AttackMove') {
-            $player_1->strengthen($powerNum_1);
-            $player_2->attack($powerNum_2, $player_1);
         } elseif (get_class($player_1->moves[$powerNum_1]) == 'StrengthenMove' && get_class($player_2->moves[$powerNum_2]) == 'StrengthenMove') {
             $player_1->strengthen($powerNum_1);
             $player_2->strengthen($powerNum_2);
+        } elseif (get_class($player_1->moves[$powerNum_1]) == 'StrengthenMove') {
+            $player_1->strengthen($powerNum_1);
+            $player_2->attack($powerNum_2, $player_1);
+        } elseif (get_class($player_2->moves[$powerNum_2]) == 'StrengthenMove') {
+            $player_2->strengthen($powerNum_2);
+            $player_1->attack($powerNum_1, $player_2);
         }
         
         
