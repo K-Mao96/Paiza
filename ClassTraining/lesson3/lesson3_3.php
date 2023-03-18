@@ -152,11 +152,8 @@
         
         //どちらも攻撃系の技を使った場合
         if (get_class($player_1->moves[$powerNum_1]) == 'AttackMove' && get_class($player_2->moves[$powerNum_2]) == 'AttackMove') {
-            //技のフレームが等しければ何もしない
-            if ($player_1->moves[$powerNum_1]->frame == $player_2->moves[$powerNum_2]->frame) {
-                
-            //フレームが短い方の技を発動する
-            } elseif ($player_1->moves[$powerNum_1]->frame < $player_2->moves[$powerNum_2]->frame) {
+            //フレームが短い方の技を発動する（フレームが同値なら何もしない）
+            if ($player_1->moves[$powerNum_1]->frame < $player_2->moves[$powerNum_2]->frame) {
                 if (get_class($player_1->moves[$powerNum_1]) == 'AttackMove') {
                     $player_1->attack($powerNum_1, $player_2);
                 }
