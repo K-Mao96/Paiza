@@ -21,21 +21,21 @@
                 
                 //フレーム、攻撃力が共に0ならば強化技としてインスタンス化する
                 if ($frame_1 == StrengthenMove::FRAME && $power_1 == StrengthenMove::POWER) {
-                    $this->moves[1] = new StrengthenMove(1, $frame_1, $power_1);
+                    $this->moves[1] = new StrengthenMove($frame_1, $power_1);
                 } else {
-                    $this->moves[1] = new AttackMove(1, $frame_1, $power_1);
+                    $this->moves[1] = new AttackMove($frame_1, $power_1);
                 }
                 
                 if ($frame_2 == StrengthenMove::FRAME && $power_2 == StrengthenMove::POWER) {
-                    $this->moves[2] = new StrengthenMove(2, $frame_2, $power_2);
+                    $this->moves[2] = new StrengthenMove($frame_2, $power_2);
                 } else {
-                    $this->moves[2] = new AttackMove(2, $frame_2, $power_2);
+                    $this->moves[2] = new AttackMove($frame_2, $power_2);
                 }
                 
                 if ($frame_3 == StrengthenMove::FRAME && $power_3 == StrengthenMove::POWER) {
-                    $this->moves[3] = new StrengthenMove(3, $frame_3, $power_3);
+                    $this->moves[3] = new StrengthenMove($frame_3, $power_3);
                 } else {
-                    $this->moves[3] = new AttackMove(3, $frame_3, $power_3);
+                    $this->moves[3] = new AttackMove($frame_3, $power_3);
                 }
             
         }
@@ -70,16 +70,13 @@
     
     //技クラス
     class Move {
-        //技番号
-        protected int $moveId;
         //発生フレーム
         public int $frame;
         //攻撃力
         protected int $power;
         
         //コンストラクタ
-        public function __construct(int $moveId, int $frame, int $power) {
-            $this->moveId = $moveId;
+        public function __construct(int $frame, int $power) {
             $this->frame = $frame;
             $this->power = $power;
         }
