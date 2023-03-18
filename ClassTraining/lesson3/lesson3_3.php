@@ -71,7 +71,7 @@
     //技クラス
     class Move {
         //発生フレーム
-        public int $frame;
+        protected int $frame;
         //攻撃力
         protected int $power;
         
@@ -79,6 +79,11 @@
         public function __construct(int $frame, int $power) {
             $this->frame = $frame;
             $this->power = $power;
+        }
+
+        //技の発生フレームを返す
+        public function getFrame() {
+            return $this->frame;
         }
     }
     
@@ -155,7 +160,7 @@
         //どちらも攻撃系の技を使った場合
         if (get_class($player_1->getMove($moveId_1)) == 'AttackMove' && get_class($player_2->getMove($moveId_2)) == 'AttackMove') {
             //フレームが短い方の技を発動する（フレームが同値なら何もしない）
-            if ($player_1->getMove($moveId_1)->frame < $player_2->getMove($moveId_2)->frame) {
+            if ($player_1->getMove($moveId_1)->getFrame() < $player_2->getMove($moveId_2)->getFrame()) {
                 if (get_class($player_1->getMove($moveId_1)) == 'AttackMove') {
                     $player_1->attack($moveId_1, $player_2);
                 }
