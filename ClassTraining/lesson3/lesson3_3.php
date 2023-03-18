@@ -4,7 +4,7 @@
         //プレイヤーのHP
         private int $hp;
         //技
-        public array $moves = [];
+        private array $moves = [];
         //退場フラグ（退場したらtrueにする)
         private bool $exitFlg = false;
         //コンストラクタ
@@ -40,18 +40,23 @@
             
         }
         
+        //特定の技を返す
+        public function getMove(int $moveId) {
+            return $this->moves[$moveId];
+        }
+        
         //退場フラグを返す
         public function getExitFlg() {
             return $this->exitFlg;
         }
         
         //攻撃技を使う
-        public function attack(int $powerNum, Player $player) {
-            $this->moves[$powerNum]->attack($player);
+        public function attack(int $moveId, Player $player) {
+            $this->getMove($moveId)->attack($player);
         }
         //強化技を使う
-        public function strengthen(int $powerNum) {
-            $this->moves[$powerNum]->strengthen($this->moves);
+        public function strengthen(int $moveId) {
+            $this->getMove($moveId)->strengthen($this->moves);
         }
         //攻撃を受ける
         public function damage (int $power) {
@@ -140,7 +145,7 @@
     //攻撃回数だけ繰り返す
     for ($i = 1; $i <= $attackCount; $i++) {
         //技を使ったプレイヤー番号、そのプレイヤーが選んだ技番号、対戦相手のプレイヤー番号、そのプレイヤーが選んだ技番号を取得する
-        fscanf(STDIN, "%d %d %d %d", $playerId_1, $powerNum_1, $playerId_2, $powerNum_2);
+        fscanf(STDIN, "%d %d %d %d", $playerId_1, $moveId_1, $playerId_2, $moveId_2);
         //一人目のプレイヤー
         $player_1 = $players[$playerId_1];
         //二人目のプレイヤー
@@ -151,27 +156,27 @@
         }
         
         //どちらも攻撃系の技を使った場合
-        if (get_class($player_1->moves[$powerNum_1]) == 'AttackMove' && get_class($player_2->moves[$powerNum_2]) == 'AttackMove') {
+        if (get_class($player_1->getMove($moveId_1)) == 'AttackMove' && get_class($player_2->getMove($moveId_2)) == 'AttackMove') {
             //フレームが短い方の技を発動する（フレームが同値なら何もしない）
-            if ($player_1->moves[$powerNum_1]->frame < $player_2->moves[$powerNum_2]->frame) {
-                if (get_class($player_1->moves[$powerNum_1]) == 'AttackMove') {
-                    $player_1->attack($powerNum_1, $player_2);
+            if ($player_1->getMove($moveId_1)->frame < $player_2->getMove($moveId_2)->frame) {
+                if (get_class($player_1->getMove($moveId_1)) == 'AttackMove') {
+                    $player_1->attack($moveId_1, $player_2);
                 }
                 
             } else {
-                if (get_class($player_2->moves[$powerNum_2]) == 'AttackMove') {
-                    $player_2->attack($powerNum_2, $player_1);
+                if (get_class($player_2->getMove($moveId_2)) == 'AttackMove') {
+                    $player_2->attack($moveId_2, $player_1);
                 }
             }
-        } elseif (get_class($player_1->moves[$powerNum_1]) == 'StrengthenMove' && get_class($player_2->moves[$powerNum_2]) == 'StrengthenMove') {
-            $player_1->strengthen($powerNum_1);
-            $player_2->strengthen($powerNum_2);
-        } elseif (get_class($player_1->moves[$powerNum_1]) == 'StrengthenMove') {
-            $player_1->strengthen($powerNum_1);
-            $player_2->attack($powerNum_2, $player_1);
-        } elseif (get_class($player_2->moves[$powerNum_2]) == 'StrengthenMove') {
-            $player_2->strengthen($powerNum_2);
-            $player_1->attack($powerNum_1, $player_2);
+        } elseif (get_class($player_1->getMove($moveId_1)) == 'StrengthenMove' && get_class($player_2->getMove($moveId_2)) == 'StrengthenMove') {
+            $player_1->strengthen($moveId_1);
+            $player_2->strengthen($moveId_2);
+        } elseif (get_class($player_1->getMove($moveId_1)) == 'StrengthenMove') {
+            $player_1->strengthen($moveId_1);
+            $player_2->attack($moveId_2, $player_1);
+        } elseif (get_class($player_2->getMove($moveId_2)) == 'StrengthenMove') {
+            $player_2->strengthen($moveId_2);
+            $player_1->attack($moveId_1, $player_2);
         }
         
         
