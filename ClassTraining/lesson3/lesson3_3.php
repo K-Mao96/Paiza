@@ -1,6 +1,8 @@
 <?php
     //プレイヤークラス
     class Player {
+        //技の数
+        private const MOVE_COUNT = 3;
         //プレイヤーのHP
         private int $hp;
         //技
@@ -18,26 +20,25 @@
             int $power_3
             ) {
                 $this->hp = $hp;
+
+                $frames = [$frame_1, $frame_2, $frame_3];
+                $powers = [$power_1, $power_2, $power_3];
                 
-                //フレーム、攻撃力が共に0ならば強化技としてインスタンス化する
-                if ($frame_1 == StrengthenMove::FRAME && $power_1 == StrengthenMove::POWER) {
-                    $this->moves[1] = new StrengthenMove($frame_1, $power_1);
-                } else {
-                    $this->moves[1] = new AttackMove($frame_1, $power_1);
-                }
-                
-                if ($frame_2 == StrengthenMove::FRAME && $power_2 == StrengthenMove::POWER) {
-                    $this->moves[2] = new StrengthenMove($frame_2, $power_2);
-                } else {
-                    $this->moves[2] = new AttackMove($frame_2, $power_2);
-                }
-                
-                if ($frame_3 == StrengthenMove::FRAME && $power_3 == StrengthenMove::POWER) {
-                    $this->moves[3] = new StrengthenMove($frame_3, $power_3);
-                } else {
-                    $this->moves[3] = new AttackMove($frame_3, $power_3);
+                //技をインスタンス化する
+                for ($moveId = 0; $moveId < self::MOVE_COUNT; $moveId++) {
+                    $this->makeMove($moveId, $frames[$moveId], $powers[$moveId]);
                 }
             
+        }
+
+        //攻撃技・強化技に分けてインスタンス化し、配列に入れる
+        public function makeMove($moveId, $frame, $power) {
+            $moveId++;
+            if ($frame == StrengthenMove::FRAME && $power == StrengthenMove::POWER) {
+                $this->moves[$moveId] = new StrengthenMove($frame, $power);
+            } else {
+                $this->moves[$moveId] = new AttackMove($frame, $power);
+            }
         }
         
         //特定の技を返す
