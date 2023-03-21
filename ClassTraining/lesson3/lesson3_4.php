@@ -1,16 +1,24 @@
 <?php
 
-    //スーパーカークラス
+    /**
+     * スーパーカークラス
+     */
     class SuperCar {
         
-        //コンストラクタ
+        /**
+         * コンストラクタ
+         */
         public function __construct(
             protected int $fuel,              //燃料
             protected int $fuelConsumption,   //燃費
             protected int $totalMileage = 0, //総移動距離
         ) {}
         
-        //run機能
+        /**
+         * run機能
+         *
+         * @return void
+         */
         public function run(): void {
             if ($this->fuel <= 0) {
                 return;
@@ -21,15 +29,25 @@
             $this->totalMileage += $this->fuelConsumption;
         }
         
-        //総移動距離を返す
+        /**
+         * 総移動距離を返す
+         *
+         * @return integer
+         */
         public function getTotalMileage(): int {
             return $this->totalMileage;
         }
     }
     
-    //スーパースーパーカークラス
+    /**
+     * スーパースーパーカークラス
+     */
     class SuperSuperCar extends SuperCar {
-        //fly機能
+        /**
+         * fly機能
+         *
+         * @return void
+         */
         public function fly (): void {
             if ($this->fuel >= 5) {
                 //燃料を5消費し、f^2(km)飛行する
@@ -42,9 +60,15 @@
         }
     }
     
-    //スーパースーパースーパーカークラス
+    /**
+     * スーパースーパースーパーカークラス
+     */
     class SuperSuperSuperCar extends SuperCar {
-        //fly機能
+        /**
+         * fly機能
+         *
+         * @return void
+         */
         public function fly (): void {
             if ($this->fuel >= 5) {
                 //燃料を5消費し、2*f^2(km)飛行する
@@ -55,7 +79,12 @@
                 parent::run();
             }
         }
-        //teleport機能
+
+        /**
+         * teleport機能
+         *
+         * @return void
+         */
         public function teleport(): void {
             $cost = $this->fuelConsumption ** 2;
             if ($this->fuel >= $cost) {
