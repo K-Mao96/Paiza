@@ -1,5 +1,12 @@
 <?php
 
+/**
+ * piza「クラス・構造体メニュー」
+ * ロボットの暴走
+ * STEP: 4 スーパースーパースーパーカー
+ * @link https://paiza.jp/works/mondai/class_primer/class_primer__super_super_supercar/edit?language_uid=php
+ */
+
     /**
      * スーパーカークラス
      */
@@ -20,13 +27,11 @@
          * @return void
          */
         public function run(): void {
-            if ($this->fuel <= 0) {
-                return;
+            if ($this->fuel > 0) {
+                //燃料を1消費し、f(km)走る
+                $this->fuel -= 1;
+                $this->totalMileage += $this->fuelConsumption;
             }
-
-            //燃料を1消費し、f(km)走る
-            $this->fuel -= 1;
-            $this->totalMileage += $this->fuelConsumption;
         }
         
         /**
