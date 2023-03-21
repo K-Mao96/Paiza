@@ -7,7 +7,7 @@
         public function __construct(
             protected int $fuel,              //燃料
             protected int $fuelConsumption,   //燃費
-            protected int $totalDistance = 0, //総移動距離
+            protected int $totalMileage = 0, //総移動距離
         ) {}
         
         //run
@@ -18,12 +18,12 @@
 
             //燃料を1消費し、fkm走る
             $this->fuel -= 1;
-            $this->totalDistance += $this->fuelConsumption;
+            $this->totalMileage += $this->fuelConsumption;
         }
         
         //総移動距離を返す
-        public function getTotalDistance() {
-            return $this->totalDistance;
+        public function getTotalMileage() {
+            return $this->totalMileage;
         }
     }
     
@@ -34,8 +34,8 @@
             if ($this->fuel >= 5) {
                 //燃料を5消費し、f^2km飛行する
                 $this->fuel -= 5;
-                $distance = $this->fuelConsumption ** 2;
-                $this->totalDistance += $distance;
+                $mileage = $this->fuelConsumption ** 2;
+                $this->totalMileage += $mileage;
             } else {
                 parent::run();
             }
@@ -49,8 +49,8 @@
             if ($this->fuel >= 5) {
                 //燃料を5消費し、2*f^2km飛行する
                 $this->fuel -= 5;
-                $distance = 2 * $this->fuelConsumption ** 2;
-                $this->totalDistance += $distance;
+                $mileage = 2 * $this->fuelConsumption ** 2;
+                $this->totalMileage += $mileage;
             } else {
                 parent::run();
             }
@@ -61,8 +61,8 @@
             if ($this->fuel >= $cost) {
                 $this->fuel -= $cost;
                 
-                $distance = $this->fuelConsumption ** 4;
-                $this->totalDistance += $distance;
+                $mileage = $this->fuelConsumption ** 4;
+                $this->totalMileage += $mileage;
             } else {
                 $this->fly();
             }
@@ -119,8 +119,8 @@
     
     //全ての車の総移動距離を出力する
     foreach ($cars as $car) {
-        $totalDistance = $car->getTotalDistance();
-        echo $totalDistance . "\n";
+        $totalMileage = $car->getTotalMileage();
+        echo $totalMileage . "\n";
     }
 
     
