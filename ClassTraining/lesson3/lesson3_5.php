@@ -17,6 +17,14 @@
             4 => 10
         ];
 
+        // 進行方向のベクトル
+        private const VECTOR = [
+            'N' => ['x' =>  0, 'y' => -1],
+            'E' => ['x' =>  1, 'y' =>  0],
+            'S' => ['x' =>  0, 'y' =>  1],
+            'W' => ['x' => -1, 'y' =>  0],
+        ];
+
         // レベルの最大値
         private const MAX_LEVEL = 4;
         
@@ -32,28 +40,13 @@
         public function proceed (string $direction): void {
             // 進めるマスの数
             $grid = self::GRID[$this->level];
-            
-            switch ($direction) {
-                case 'N':
-                    // 北に進む：y座標を-の方向に進む
-                    $this->pointY -= $grid;
-                    break;
-                case 'E':
-                    // 東に進む：x座標を+の方向に進む
-                    $this->pointX += $grid;
-                    break;
-                case 'S':
-                    // 南に進む：y座標を+の方向に進む
-                    $this->pointY += $grid;
-                    break;
-                case 'W':
-                    // 西に進む：x座標を-の方向に進む
-                    $this->pointX -= $grid;
-                    break;
-                
-                default:
-                    break;
-            }
+
+            // 進むベクトル
+            $vectorX = self::VECTOR[$direction]['x'];
+            $vectorY = self::VECTOR[$direction]['y'];
+
+            $this->pointX += $vectorX * $grid;
+            $this->pointY += $vectorY * $grid;
             
             // ロボットの位置に工具箱がある時は工具箱フラグをfalse → trueにする
             $this->checkToolBoxExistence();
