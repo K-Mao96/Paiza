@@ -65,8 +65,7 @@
         // レベルアップする
         public function levelUp(): void {
             // 最大レベルは4
-            $this->level = min($this->level, self::MAX_LEVEL);
-            $this->level ++;
+            $this->level = min($this->level + 1, self::MAX_LEVEL);
         }
 
         // 座標を返す
