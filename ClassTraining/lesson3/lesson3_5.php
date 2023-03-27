@@ -48,25 +48,6 @@
             $this->pointX += $vectorX * $grid;
             $this->pointY += $vectorY * $grid;
             
-            // ロボットの位置に工具箱がある時は工具箱フラグをfalse → trueにする
-            $this->checkToolBoxExistence();
-            
-            // 工具箱の位置で止まった場合はレベルアップする
-            if ($this->isToolBoxPoint) {
-                $this->levelUp();
-            }
-            
-            // 工具箱フラグをリセットする
-            $this->isToolBoxPoint = false;
-        }
-        
-        // ロボットの位置に工具箱があるならフラグをtrueにする
-        public function checkToolBoxExistence (): void {
-            foreach (Factory::$toolBoxPoint as $point) {
-                if ($this->pointX == $point['x'] && $this->pointY == $point['y']) {
-                    $this->isToolBoxPoint = true;
-                }
-            }
         }
         
         // レベルアップする
@@ -76,15 +57,10 @@
                 $this->level ++;
             }
         }
-        
-        // x座標を返す
-        public function getPointX(): int {
-            return $this->pointX;
-        }
-        
-        // y座標を返す
-        public function getPointY(): int {
-            return $this->pointY;
+
+        // 座標を返す
+        public function getPoint(): array {
+            return ['x' => $this->pointX, 'y' => $this->pointY];
         }
         
         // レベルを返す
@@ -130,18 +106,24 @@
         
         // ロボットの移動
         $robot->proceed($direction);
+
+        // ロボットの位置を取得
+        $point = $robot->getPoint();
+
+        // ロボットの位置が工具箱の位置と同じなら、レベルアップする
+        if (in_array($point, Factory::$toolBoxPoint)) {
+            $robot->levelUp();
+        }
     }
     
     // 移動後のロボットの位置とレベルを出力する
     foreach ($robots as $robot) {
-        // x座標を取得
-        $pointX = $robot->getPointX();
-        // y座標を取得
-        $pointY = $robot->getPointY();
+        // 座標を取得
+        $point = $robot->getPoint();
         // レベルを取得
         $level  = $robot->getLevel();
 
         // 出力する
-        echo $pointX . " " . $pointY . " " . $level . "\n";
+        echo $point['x'] . " " . $point['y'] . " " . $level . "\n";
     }
 ?>
