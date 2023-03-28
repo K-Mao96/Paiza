@@ -1,11 +1,23 @@
 <?php
-    // 工場クラス
+
+    /**
+     * 工場クラス
+     */
     class Factory {
-        // 工具箱の位置
-        // 工具箱ID => ['x' => x座標, 'y' => y座標]
+        /**
+         * 工具箱の位置
+         *
+         * @var array
+         */
         private static array $toolBoxPoints = [];
 
-        //工具箱の位置をセットする
+        /**
+         * 工具箱の位置をセットする
+         *
+         * @param integer $pointX x座標
+         * @param integer $pointY y座標
+         * @return void
+         */
         public static function setToolBoxPoints(int $pointX, int $pointY): void {
             self::$toolBoxPoints[] = [
                 'x' => $pointX,
@@ -13,16 +25,23 @@
             ];
         }
 
-        //工具箱の位置を返す
+        /**
+         * 工具箱の位置を返す
+         *
+         * @return array
+         */
         public static function getToolBoxPoints(): array {
             return self::$toolBoxPoints;
         }
     }
     
-    // ロボットクラス
+    /**
+     * ロボットクラス
+     */
     class Robot {
-        // 進めるマスの数
-        // レベル => 進めるマスの数
+        /**
+         * レベル別に設定された進めるマスの数
+         */
         private const GRID = [
             1 => 1,
             2 => 2,
@@ -30,7 +49,9 @@
             4 => 10
         ];
 
-        // 進行方向のベクトル
+        /**
+         * 進行方向のベクトル
+         */
         private const VECTOR = [
             'N' => ['x' =>  0, 'y' => -1],
             'E' => ['x' =>  1, 'y' =>  0],
@@ -38,17 +59,30 @@
             'W' => ['x' => -1, 'y' =>  0],
         ];
 
-        // レベルの最大値
+        /**
+         * レベルの最大値
+         */
         private const MAX_LEVEL = 4;
         
-        // コンストラクタ
+        /**
+         * コンストラクタ
+         *
+         * @param integer $pointX x座標
+         * @param integer $pointY y座標
+         * @param integer $level  レベル
+         */
         public function __construct(
-            private int $pointX, // x座標
-            private int $pointY, // y座標
-            private int $level   // レベル
+            private int $pointX,
+            private int $pointY,
+            private int $level,
         ) {}
-        
-        // 移動する
+
+        /**
+         * ロボットの移動
+         *
+         * @param string $direction 進行方向
+         * @return void
+         */
         public function proceed (string $direction): void {
             // 進めるマスの数
             $grid = self::GRID[$this->level];
@@ -62,18 +96,30 @@
             
         }
         
-        // レベルアップする
+        /**
+         * ロボットのレベルをアップする
+         *
+         * @return void
+         */
         public function levelUp(): void {
             // 最大レベルは4
             $this->level = min($this->level + 1, self::MAX_LEVEL);
         }
 
-        // 座標を返す
+        /**
+         * ロボットの現在地を返す
+         *
+         * @return array
+         */
         public function getPoint(): array {
             return ['x' => $this->pointX, 'y' => $this->pointY];
         }
         
-        // レベルを返す
+        /**
+         * ロボットのレベルを返す
+         *
+         * @return integer
+         */
         public function getLevel(): int {
             return $this->level;
         }
