@@ -10,12 +10,20 @@
 // 配列の総数を取得
 fscanf(STDIN, "%d", $arraySize);
 
-// 先頭の要素以外を出力
+// 配列に要素を追加
+$array = [];
 for ($i=1; $i<=$arraySize; $i++) {
     fscanf(STDIN, "%d", $item);
-    if ($i >= 2) {
-        echo $item . "\n";
-    }
+    $array[] = $item;
+}
+
+// 先頭の要素を削除
+// MEMO: array_shift()は参照渡し
+array_shift($array);
+
+// 残った要素を出力
+foreach($array as $item) {
+    echo $item . "\n";
 }
 
 ?>
