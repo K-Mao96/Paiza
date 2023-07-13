@@ -12,8 +12,8 @@
 $input = trim(fgets(STDIN));
 $inputs = explode(' ', $input);
 
-$numberListSize = $inputs[0];
-$commandListSize = $inputs[1];
+// MEMO: [$numberListSize, $commandListSize] = $inputs;という書き方もできるが分かりにくいかも
+list($numberListSize, $commandListSize) = $inputs;
 
 // 数字のリストを作る
 $numberList = [];
