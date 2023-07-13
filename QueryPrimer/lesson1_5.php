@@ -15,34 +15,28 @@ $inputs = explode(' ', $input);
 // MEMO: [$numberListSize, $commandListSize] = $inputs;という書き方もできるが分かりにくいかも
 list($numberListSize, $commandListSize) = $inputs;
 
-// 数字のリストを作る
-$numberList = [];
-for ($i=0; $i<$numberListSize; $i++) {
+// キューに数字をセットする
+$numberQueue = new SplQueue();
+for ($i = 0; $i < $numberListSize; $i++) {
     fscanf(STDIN, "%d", $number);
-    $numberList[] = $number;
+    $numberQueue->enqueue($number);
 }
 
-// 命令のリストを取得する
-$commandList = [];
-for ($i=0; $i<$commandListSize; $i++) {
+for ($i = 0; $i < $commandListSize; $i++) {
+    // 命令を取り出す
     fscanf(STDIN, "%s", $command);
-    $commandList[] = $command;
-}
 
-// 配列の要素を出力する関数
-function echoNumber(int $number) {
-    echo $number . "\n";
-}
-
-// 命令に沿って配列を操作する
-foreach ($commandList as $command) {
+    // popの場合はキューの先頭の要素を取り出す
     if ($command === "pop") {
-        array_shift($numberList);
+        $numberQueue->dequeue();
+        continue;
     }
-    if ($command === "show") {
-        array_map('echoNumber', $numberList);
+    foreach ($numberQueue as $number) {
+        echo $number . "\n";
     }
 }
+
+
 
 
 ?>
