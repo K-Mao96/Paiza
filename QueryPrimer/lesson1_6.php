@@ -7,6 +7,10 @@
  * @link https://paiza.jp/works/mondai/query_primer/query_primer__map_easy?language_uid=php
  */
 
+// 例外クラスの定義
+class StudentNumberException extends Exception {}
+class StudentIdException extends Exception {}
+
 // 出席番号クラス
 class StudentNumber {
     public int $value;
@@ -58,38 +62,46 @@ class Student {
     }
 }
 
-// 生徒の人数と、与えられる出席番号の数を取得
-$input = trim(fgets(STDIN));
-$inputs = explode(' ', $input);
-list($studentSize, $givenStudentNumSize) = $inputs;
+try {
 
-// 全ての生徒の生徒クラスインスタンスを生成する
-$studentList = [];
-for ($i=0; $i<$studentSize; $i++) {
+    // 生徒の人数と、与えられる出席番号の数を取得
     $input = trim(fgets(STDIN));
     $inputs = explode(' ', $input);
-    list($num, $id) = $inputs;
-    $studentNum = new StudentNumber($num);
-    $studentId = new StudentId($id);
+    list($studentSize, $givenStudentNumSize) = $inputs;
 
-    $studentList[$studentNum->value] = new Student($studentNum, $studentId);
+    // 全ての生徒の生徒クラスインスタンスを生成する
+    $studentList = [];
+    for ($i=0; $i<$studentSize; $i++) {
+        $input = trim(fgets(STDIN));
+        $inputs = explode(' ', $input);
+        list($num, $id) = $inputs;
+        $studentNum = new StudentNumber($num);
+        $studentId = new StudentId($id);
+
+        $studentList[$studentNum->value] = new Student($studentNum, $studentId);
+    }
+
+    // 与えられる出席番号に対応する生徒IDを出力する
+    $givenStudentNumList = [];
+    for ($i=0; $i<$givenStudentNumSize; $i++) {
+        // 与えられる出席番号を取得
+        fscanf(STDIN, "%d", $givenStudentNum);
+
+        // 与えられた出席番号に対応する生徒のインスタンスを取得
+        $targetStudent = $studentList[$givenStudentNum];
+
+        // 生徒IDと改行を出力
+        echo $targetStudent->getStudentId();
+        echo "\n";
+    }
+} catch (StudentNumberException $e) {
+    echo 'Error:' . $e->getMessage() . "\n";
+
+} catch (StudentIdException $e) {
+    echo 'Error:' . $e->getMessage() . "\n";
+
+} catch (Exception $e) {
+    echo 'Error:' . $e->getMessage() . "\n";
 }
-
-// 与えられる出席番号に対応する生徒IDを出力する
-$givenStudentNumList = [];
-for ($i=0; $i<$givenStudentNumSize; $i++) {
-    // 与えられる出席番号を取得
-    fscanf(STDIN, "%d", $givenStudentNum);
-
-    // 与えられた出席番号に対応する生徒のインスタンスを取得
-    $targetStudent = $studentList[$givenStudentNum];
-
-    // 生徒IDと改行を出力
-    echo $targetStudent->getStudentId();
-    echo "\n";
-}
-
-
-
 
 ?>
