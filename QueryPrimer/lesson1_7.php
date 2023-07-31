@@ -47,6 +47,10 @@ class StudentId {
 }
 // 生徒クラス
 class Student {
+    
+    // 生徒リスト
+    public static array $studentList = [];
+     
     function __construct(
         public StudentNumber $studentNum,
         public StudentId $studentId,
@@ -55,12 +59,22 @@ class Student {
     }
 
     /**
+     * 生徒リストに生徒を追加する
+     *
+     * @param Student $newStudent
+     * @return void
+     */
+    public static function addStudent (Student $newStudent): void {
+        self::$studentList[$newStudent->getStudentNum()] = $newStudent;
+    }
+
+    /**
      * 生徒を忘れる
      *
      * @param integer $studentNum
      * @return void
      */
-    public function forgetStudent():void {
+    public function forgetStudent(): void {
         $this->forgetFlg = true;
     } 
 
@@ -83,6 +97,47 @@ class Student {
     }
 }
 
+// イベントインターフェース
+interface EventInterface {
+
+    // イベントを実行する
+    function exec(): void;
+}
+
+// callイベント
+class CallEvent implements EventInterface {
+
+    public function __construct(private Student $targetStudent){}
+
+    public function exec(): void {
+        $studentId = $this->targetStudent->getStudentId();
+        echo $studentId . "\n";
+    }
+}
+
+// leaveイベント
+class LeaveEvent implements EventInterface {
+
+    public function __construct(private Student $targetStudent){}
+
+    public function exec(): void {
+        $this->targetStudent->forgetStudent();
+    }
+}
+
+// joinイベント
+class JoinEvent implements EventInterface {
+
+    public function __construct(
+        private StudentNumber $studentNum,
+        private StudentId $studentId
+    ){}
+
+    public function exec(): void {
+        Student::$studentList[$this->studentNum->value] = new Student($this->studentNum, $this->studentId);
+    }
+}
+
 try {
 
     // 生徒の初期人数と、与えられるイベントの数を取得
@@ -91,7 +146,6 @@ try {
     list($initialStudentSize, $givenEventSize) = $inputs;
 
     // 全ての生徒の生徒クラスインスタンスを生成する
-    $studentList = [];
     for ($i=0; $i<$initialStudentSize; $i++) {
         $input = trim(fgets(STDIN));
         $inputs = explode(' ', $input);
@@ -99,7 +153,8 @@ try {
         $studentNum = new StudentNumber($num);
         $studentId = new StudentId($id);
 
-        $studentList[$studentNum->value] = new Student($studentNum, $studentId);
+        // 生徒リストに加える
+        Student::addStudent(new Student($studentNum, $studentId));
     }
 
     // 与えられるイベントに対応する処理を行う
@@ -108,13 +163,14 @@ try {
         $input = trim(fgets(STDIN));
         $inputs = explode(' ', $input);
         $id = null;
-        if (count($inputs) === 3) {
-            list($event, $num, $id) = $inputs;
-        } else {
-            list($event, $num) = $inputs;
-        }
 
-        
+        if (count($inputs) === 3) {
+            // joinイベントの場合
+            list($eventName, $num, $id) = $inputs;
+        } else {
+            // その他のイベント
+            list($eventName, $num) = $inputs;
+        }
 
         // 生徒番号をインスタンス化
         $studentNum = new StudentNumber($num);
@@ -123,25 +179,22 @@ try {
         $studentId = $id ? new StudentId($id) : null;
 
         // 与えられた生徒番号に対応する生徒インスタンスを取得
-        $targetStudent = $studentList[$studentNum->value];
+        $targetStudent = Student::$studentList[$studentNum->value];
 
         // イベントを実行
-        switch ($event) {
+        switch ($eventName) {
             case 'call':
-                $studentId = $targetStudent->getStudentId();
-                echo $studentId . "\n";
+                $event = new CallEvent($targetStudent);
                 break;
-
             case 'leave':
-                $targetStudent->forgetStudent();
+                $event = new LeaveEvent($targetStudent);
                 break;
             case 'join':
                 // MEMO: 同じ生徒番号の生徒が既に存在している場合は上書きされる
-                $studentList[$studentNum->value] = new Student($studentNum, $studentId);
+                $event = new JoinEvent($studentNum, $studentId);
                 break;
         }
-        var_dump($studentList);
-
+        $event->exec();
     }
 } catch (StudentNumberException $e) {
     echo 'Error:' . $e->getMessage() . "\n";
