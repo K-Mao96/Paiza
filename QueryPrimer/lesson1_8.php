@@ -49,18 +49,22 @@ class Height {
     }
 }
 
-// N、X、Pを取得する
 try {
+    // N、X、Pを取得する
     fscanf(STDIN, "%d %d %d", $N, $X, $P);
 
+    // Paizaくん・転校生以外の生徒の数
     $studentCountObj = new StudentCount($N);
     $studentCount = $studentCountObj->getValue();
 
+    // 転校生の身長
     $newStudentHeightObj = new Height($X);
     $newStudentHeight = $newStudentHeightObj->getValue();
 
+    // Paiza君の身長
     $paizaHeightObj = new Height($P);
     $paizaHeight = $paizaHeightObj->getValue();
+
 
     // 生徒の身長を配列で取得
     $studentHeightList = [];
@@ -68,7 +72,6 @@ try {
         fscanf(STDIN, "%d", $studentHeight);
         $studentHeightList[] = $studentHeight;
     }
-
 
     // 配列にPaizaくんの身長を追加
     $studentHeightList[] = $paizaHeight;
