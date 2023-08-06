@@ -23,16 +23,11 @@ $studentHeightList[] = $PaizaHeight;
 // 配列に転校生の身長を追加
 $studentHeightList[] = $newStudentHeight;
 
-
 // 配列を身長の順に並べ替える
 sort($studentHeightList);
 
-// 配列のキーと値を反転させる
-$studentHeightListAsc = array_flip($studentHeightList);
-
-
 // Paizaくんの身長が前から何番目か調べる
 // MEMO: 0番目, 1番目... というカウント方法になっているため、1を足す
-echo $studentHeightListAsc[$PaizaHeight] + 1;
+echo array_search($PaizaHeight, $studentHeightList) + 1;
 
 ?>
