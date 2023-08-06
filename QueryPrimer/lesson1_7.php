@@ -18,10 +18,10 @@ class StudentNumber {
     public function __construct(int $value) {
 
         if ($value < 1) {
-            throw new Exception("出席番号には1以上を指定してください");
+            throw new StudentNumberException("出席番号には1以上を指定してください");
         }
         if ($value > 1000000) {
-            throw new Exception("出席番号には1000000以下を指定してください");
+            throw new StudentNumberException("出席番号には1000000以下を指定してください");
         }
         
         $this->value = $value;
@@ -36,10 +36,10 @@ class StudentId {
         $pattern = '/^[a-zA-Z0-9]+$/';
 
         if (!preg_match($pattern, $value)) {
-            throw new Exception("生徒IDにはアルファベット大文字小文字(a ~ z , A ~ Z)と数字(0 ~ 9)のみを使用してください");
+            throw new StudentIdException("生徒IDにはアルファベット大文字小文字(a ~ z , A ~ Z)と数字(0 ~ 9)のみを使用してください");
         }
         if (strlen($value) > 20) {
-            throw new Exception("生徒IDは20文字以下で入力してください");
+            throw new StudentIdException("生徒IDは20文字以下で入力してください");
         }
         
         $this->value = $value;
