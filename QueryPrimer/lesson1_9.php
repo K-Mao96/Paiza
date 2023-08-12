@@ -1,5 +1,7 @@
 <?php
 
+use Height as GlobalHeight;
+
 /**
  * piza「クエリメニュー」
  * ソートと検索 (query)
@@ -68,6 +70,88 @@ class Height {
     }
 }
 
+// 身長リストクラス
+class StudentHeightList {
+    static array $list = [];
+
+    // リストに生徒を追加する
+    static function addHeight(Height $height): void {
+        self::$list[] = $height->getValue();
+    }
+    // リストを背の順で並べ替える
+    static function sortList(): void {
+        sort(self::$list);
+    }
+}
+
+// イベントインターフェース
+interface EventInterFace {
+    function exec(): void;
+}
+// joinイベント
+class Join implements EventInterFace {
+    // 転校生の身長
+    public function __construct(public Height $newStudentHeight) 
+    {}
+
+    // 処理を実行
+    public function exec(): void {
+        // 配列に転校生の身長を追加
+        StudentHeightList::addHeight($this->newStudentHeight);
+    } 
+}
+// sortイベント
+class Sort implements EventInterFace {
+
+    // 処理を実行
+    public function exec(): void {
+        // 並び替える
+        StudentHeightList::sortList();
+
+    }
+}
+// class Sort implements EventInterFace {
+
+//     public function __construct(public Height $paizaHeight)
+//     {}
+//     // 処理を実行
+//     public function exec(): void {
+//         // 並び替える
+//         StudentHeightList::sortList();
+
+//         // 結果を表示する
+//         echo array_search($this->paizaHeight->getValue(), StudentHeightList::$list) + 1;
+//         echo "\n";
+
+//     }
+// }
+
+// イベントの種類
+class EventType
+{
+    const JOIN = 'join';
+    const SORT = 'sort';
+
+    public EventInterFace $event;
+
+    public function __construct(public string $magicType, public ?Height $paizaHeight, public ?Height $height)
+    {
+        switch($magicType) {
+            case self::JOIN:
+                $this->event = new Join($height);
+                break;
+            case self::SORT:
+                $this->event = new Sort($paizaHeight);
+                break;
+        }
+    }
+
+    public function getEventType(): EventInterFace {
+        return $this->event;
+    }
+}
+
+
 try {
     // N、X、Pを取得する
     fscanf(STDIN, "%d %d %d", $N, $K, $P);
@@ -81,38 +165,38 @@ try {
     $eventCount = $eventCountObj->getValue();
 
     // Paiza君の身長
-    $paizaHeightObj = new Height($P);
-    $paizaHeight = $paizaHeightObj->getValue();
-
+    $paizaHeight = new Height($P);
 
     // 生徒の身長を配列で取得
-    $studentHeightList = [];
     for ($i=0; $i<$studentCount; $i++) {
-        fscanf(STDIN, "%d", $studentHeight);
-        $studentHeightList[] = $studentHeight;
+        fscanf(STDIN, "%d", $height);
+        $studentHeight = new Height($height);
+        StudentHeightList::addHeight($studentHeight);
     }
     // 配列にPaizaくんの身長を追加
-    $studentHeightList[] = $paizaHeight;
+    StudentHeightList::addHeight($paizaHeight);
 
 
     // イベントを処理する
     for ($i=0; $i<$eventCount; $i++) {
         $newStudentHeight = null;
-        fscanf(STDIN, "%s %d", $eventName, $height);
+        fscanf(STDIN, "%s %d", $eventType, $height);
 
-        if ($eventName === 'join') {
+        // $newStudentHeight = new Height($height);
+
+        // $event = new EventType($eventType, $paizaHeight,  $height);
+        // $event->getEventType()->exec();
+
+        if ($eventType === 'join') {
             // 転校生の身長をインスタンス化
-            $newStudentHeightObj = new Height($height);
-            $newStudentHeight = $newStudentHeightObj->getValue();
+            $newStudentHeight = new Height($height);
             // 配列に転校生の身長を追加
-            $studentHeightList[] = $newStudentHeight;
+            $event = new Join($newStudentHeight);
+            $event->exec();
         } else {
-            // 配列を身長の順に並べ替える
-            sort($studentHeightList);
-
-            // Paizaくんの身長が前から何番目か調べる
-            // MEMO: 0番目, 1番目... というカウント方法になっているため、1を足す
-            echo array_search($paizaHeight, $studentHeightList) + 1;
+            $event = new Sort();
+            $event->exec();
+            echo array_search($paizaHeight->getValue(), StudentHeightList::$list) + 1;
             echo "\n";
         }
     }
