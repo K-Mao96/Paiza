@@ -9,6 +9,9 @@
 class RowAmoutException extends Exception {}
 class ColAmoutException extends Exception {}
 class TextAmoutException extends Exception {}
+class CoordinateAmountException extends Exception {}
+class YCoordinateException extends Exception {}
+class XCoordinateException extends Exception {}
 
 // 盤面の行数クラス
     // 1<=H<=20
@@ -23,10 +26,11 @@ class Row {
         if ($value > 20) {
             throw new RowAmoutException("行数には20以下を指定してください");
         }
+
         $this->value = $value;
     }
 
-    public function getValue()
+    public function getValue(): int
     {
         return $this->value;
     }
@@ -45,10 +49,11 @@ class Col {
         if ($value > 20) {
             throw new ColAmoutException("列数には20以下を指定してください");
         }
+
         $this->value = $value;
     }
 
-    public function getValue()
+    public function getValue(): int
     {
         return $this->value;
     }
@@ -68,14 +73,14 @@ class Text {
         $this->value = $value;
     }
 
-    public function getValue()
+    public function getValue(): string
     {
         return $this->value;
     }
 }
 
 // 盤面クラス
-    // 配列
+    // 盤面２次元配列で表現する
 class Board {
     private array $board;
 
@@ -88,51 +93,56 @@ class Board {
             fscanf(STDIN, "%s", $text);
         
             // 1文字ずつ区切って配列にする
-            $textList = str_split($text);
+            $textListTmp = str_split($text);
+
+            $textList = array_map(function ($text) {
+                return new Text($text);
+            }, $textListTmp);
         
             $this->board[$i] = $textList;
         }
     }
 
-    public function getBoard()
+    public function getBoard(): array
     {
         return $this->board;
     }
 
-    public function getBoardText(XCoordinate $x, YCoordinate $y)
+    // 指定された座標に書かれた文字を返す
+    public function getBoardText(XCoordinate $x, YCoordinate $y): Text
     {
         $xValue = $x->getValue();
         $yValue = $y->getValue();
 
-        $result = $this->board[$yValue][$xValue];
+        $text = $this->board[$yValue][$xValue];
 
-        return $result;
+        return $text;
     }
 }
 
 // 座標の数クラス
     // 1<=N<=H*W
 class CoordinateAmount {
-    private string $value;
+    private int $value;
 
     public function __construct(int $value, Row $row, Col $col)
     {
-        $height = $row->getValue();
-        $width = $col->getValue();
+        $height    = $row->getValue();
+        $width     = $col->getValue();
         $maxAmount = $height * $width;
+
         if ($value < 1) {
-            throw new TextAmoutException("座標の数には1以上を指定してください。");
+            throw new CoordinateAmountException("座標の数には1以上を指定してください。");
         }
 
         if ($value > $maxAmount) {
-            throw new TextAmoutException("座標の数には" . $maxAmount . "以下を指定してください。");
+            throw new CoordinateAmountException("座標の数には" . $maxAmount . "以下を指定してください。");
         }
-
 
         $this->value = $value;
     }
 
-    public function getValue()
+    public function getValue(): int
     {
         return $this->value;
     }
@@ -141,23 +151,24 @@ class CoordinateAmount {
 // Y座標クラス
     // 0 ≦ y < H
 class YCoordinate {
-    private string $value;
+    private int $value;
 
     public function __construct(int $value, Row $row)
     {
         $height = $row->getValue();
+
         if ($value < 0) {
-            throw new TextAmoutException("y座標には0以上を指定してください。");
+            throw new YCoordinateException("y座標には0以上を指定してください。");
         }
 
         if ($value > $height) {
-            throw new TextAmoutException("y座標には" . $height . "より小さい値を指定してください。");
+            throw new YCoordinateException("y座標には" . $height . "より小さい値を指定してください。");
         }
 
         $this->value = $value;
     }
 
-    public function getValue()
+    public function getValue(): int
     {
         return $this->value;
     }
@@ -166,23 +177,24 @@ class YCoordinate {
 // X座標クラス
     // 0 ≦ x < W 
 class XCoordinate {
-    private string $value;
+    private int $value;
 
     public function __construct(int $value, Col $col)
     {
         $width = $col->getValue();
+
         if ($value < 0) {
-            throw new TextAmoutException("x座標には0以上を指定してください。");
+            throw new XCoordinateException("x座標には0以上を指定してください。");
         }
 
         if ($value > $width) {
-            throw new TextAmoutException("x座標には" . $width . "より小さい値を指定してください。");
+            throw new XCoordinateException("x座標には" . $width . "より小さい値を指定してください。");
         }
 
         $this->value = $value;
     }
 
-    public function getValue()
+    public function getValue(): int
     {
         return $this->value;
     }
@@ -199,26 +211,28 @@ class DrawBoardText
     public function __construct(CoordinateAmount $coordinateAmountObj, Row $rowObj, Col $colObj, Board $boardObj)
     {
         $this->coordinateAmountObj = $coordinateAmountObj;
-        $this->rowObj = $rowObj;
-        $this->colObj = $colObj;
-        $this->boardObj = $boardObj;
+        $this->rowObj              = $rowObj;
+        $this->colObj              = $colObj;
+        $this->boardObj            = $boardObj;
     }
 
-    public function exec()
+    public function exec(): void
     {
         $coordinateAmount = $this->coordinateAmountObj->getValue();
+
         for ($i=0; $i<$coordinateAmount; $i++) {
-            // 各行の入力を取得する（y座標、x座業）
-            // 半角スペースで区切って別々の変数として定義する
+            
+            // 指定された座標を取得する
             [$y, $x] = fscanf(STDIN, "%d %d");
-            $yObj = new YCoordinate($y, $this->rowObj);
-            $xObj = new XCoordinate($x, $this->colObj);
-            // 配列Aに対して、座標と同じインデックスの要素を文字列をして出力する
+            $yObj    = new YCoordinate($y, $this->rowObj);
+            $xObj    = new XCoordinate($x, $this->colObj);
+
+            // 座標に書かれたテキストを取得する
             $result = $this->boardObj->getBoardText($xObj, $yObj);
-            $text = new Text($result);
-            echo $text->getValue();
-            // 改行を出力する
-            echo "\n";
+            $text   = $result->getValue();
+
+            // 結果を出力する
+            echo $text . "\n";
         }
     }
 
@@ -228,14 +242,17 @@ class DrawBoardText
 // 盤面の行数H、列数W、座標の数Nを取得する
 [$h, $w, $n] = fscanf(STDIN, "%d %d %d");
 
+// 盤面の行数
 $rowObj = new Row($h);
-$colObj = new Col($w);
-$coordinateAmountObj = new CoordinateAmount($n, $rowObj, $colObj);
 
-// 盤面を表現する配列Aを空で定義
+// 盤面の列数
+$colObj = new Col($w);
+
+// 盤面
 $boardObj = new Board($rowObj);
 
-// 座標の数
+// 与えられる座標の総数
+$coordinateAmountObj = new CoordinateAmount($n, $rowObj, $colObj);
 $coordinateAmount = $coordinateAmountObj->getValue();
 
 // ボードの文字を出力する
