@@ -168,12 +168,15 @@ class Board {
      // マスの両端がターゲット文字かどうか判定する
      public function isSandwichedTarget(XCoordinate $xObj, YCoordinate $yObj, Col $colObj)
      {
+        // 左端のマスの場合
         if ($this->isLeftEnd($xObj)) {
             if ($this->isTargetRight($xObj, $yObj)) {
                 return true;
             }
             return false;
         }
+
+        // 右端のマスの場合
         if ($this->isRightEnd($xObj, $colObj)) {
             if ($this->isTargetLeft($xObj, $yObj)) {
                 return true;
@@ -181,6 +184,7 @@ class Board {
             return false;
         }
 
+        // 端のマス以外の場合
         if ($this->isTargetLeft($xObj, $yObj) && $this->isTargetRight($xObj, $yObj)) {
             return true;
         }
