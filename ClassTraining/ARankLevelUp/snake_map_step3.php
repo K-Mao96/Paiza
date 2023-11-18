@@ -3,7 +3,7 @@
 /**
  * piza「Aランクレベルアップメニュー」
  * マップの判定・縦横
- * STEP: 1 マップの判定・横
+ * STEP: 3 マップの判定・横
  * @link https://paiza.jp/works/mondai/a_rank_level_up_problems/a_rank_snake_map_step3?language_uid=php
  */
 

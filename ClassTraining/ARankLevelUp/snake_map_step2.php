@@ -2,7 +2,7 @@
 /**
  * piza「Aランクレベルアップメニュー」
  * マップの判定・縦横
- * STEP: 1 盤面の情報変更
+ * STEP: 2 盤面の情報変更
  * @link https://paiza.jp/works/mondai/a_rank_level_up_problems/a_rank_snake_map_step2/edit?language_uid=php
  */
 
