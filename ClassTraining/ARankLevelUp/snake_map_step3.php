@@ -1,9 +1,10 @@
 <?php
+
 /**
  * piza「Aランクレベルアップメニュー」
  * マップの判定・縦横
- * STEP: 1 盤面の情報変更
- * @link https://paiza.jp/works/mondai/a_rank_level_up_problems/a_rank_snake_map_step2/edit?language_uid=php
+ * STEP: 1 マップの判定・横
+ * @link https://paiza.jp/works/mondai/a_rank_level_up_problems/a_rank_snake_map_step3?language_uid=php
  */
 
 class RowAmoutException extends Exception {}
@@ -88,6 +89,9 @@ class Board {
     // 置換後の文字
     const REPLACE_TEXT = "#";
 
+    // 左右判定のターゲット文字
+    const TARGET_TEXT = "#";
+
     public function __construct(Row $row)
     {
         $this->replaceCoordinatesList = [];
@@ -159,6 +163,82 @@ class Board {
         }
 
         $this->replaceCoordinatesList = $replaceCoordinatesList;
+     }
+
+     // マスの両端がターゲット文字かどうか判定する
+     public function isSandwichedTarget(XCoordinate $xObj, YCoordinate $yObj, Col $colObj)
+     {
+        if ($this->isLeftEnd($xObj)) {
+            if ($this->isTargetRight($xObj, $yObj)) {
+                return true;
+            }
+            return false;
+        }
+        if ($this->isRightEnd($xObj, $colObj)) {
+            if ($this->isTargetLeft($xObj, $yObj)) {
+                return true;
+            }
+            return false;
+        }
+
+        if ($this->isTargetLeft($xObj, $yObj) && $this->isTargetRight($xObj, $yObj)) {
+            return true;
+        }
+        return false;
+     }
+
+     // 左端のマスかどうか判定する
+     public function isLeftEnd(XCoordinate $xObj)
+     {
+        $x = $xObj->getValue();
+
+        if ($x === 0) {
+            return true;
+        }
+
+        return false;
+     }
+
+     // 右端のマスかどうか判定する
+     public function isRightEnd(XCoordinate $xObj, Col $colObj)
+     {
+        $x = $xObj->getValue();
+        $maxCol = $colObj->getValue();
+        $maxXValue = $maxCol - 1;
+
+        if ($x === $maxXValue) {
+            return true;
+        }
+
+        return false;
+     }
+
+     // 左隣のマスに書かれた文字が#かどうか判断する
+     public function isTargetLeft(XCoordinate $xObj, YCoordinate $yObj)
+     {
+        $x = $xObj->getValue();
+        $y = $yObj->getValue();
+
+        $leftX = $x - 1;
+
+        $leftTextObj =  $this->board[$y][$leftX];
+        $leftText = $leftTextObj->getValue();
+        
+        return $leftText === self::TARGET_TEXT;
+     }
+
+     // 右隣のマスに書かれた文字が#かどうか判断する
+     public function isTargetRight(XCoordinate $xObj, YCoordinate $yObj)
+     {
+        $x = $xObj->getValue();
+        $y = $yObj->getValue();
+
+        $rightX = $x + 1;
+
+        $rightTextObj =  $this->board[$y][$rightX];
+        $rightText = $rightTextObj->getValue();
+        
+        return $rightText === self::TARGET_TEXT;
      }
 }
 
@@ -243,35 +323,43 @@ class XCoordinate {
 }
 
 // 処理実行クラス
-class DrawBoard
+class GetSandwichedCoordinate
 {
-    private CoordinateAmount $coordinateAmountObj;
     private Row $rowObj;
     private Col $colObj;
     private Board $boardObj;
 
-    public function __construct(CoordinateAmount $coordinateAmountObj, Row $rowObj, Col $colObj, Board $boardObj)
+    public function __construct(Row $rowObj, Col $colObj, Board $boardObj)
     {
-        $this->coordinateAmountObj = $coordinateAmountObj;
-        $this->rowObj              = $rowObj;
-        $this->colObj              = $colObj;
-        $this->boardObj            = $boardObj;
+        $this->rowObj   = $rowObj;
+        $this->colObj   = $colObj;
+        $this->boardObj = $boardObj;
     }
 
     public function exec(): void
     {
-        // 置換対象の座標リストを作成する
-       $this->boardObj->makeReplaceTargetsList($this->coordinateAmountObj, $this->rowObj, $this->colObj);
+        // ボードの各マスの両端が#なら座標を出力する
+        $row = $this->rowObj->getValue();
+        $col = $this->colObj->getValue();
 
-       // 盤面を描画する
-        $this->boardObj->drawBoard();
+        for ($y=0; $y<$row; $y++) {
+            for ($x=0; $x<$col; $x++) {
+                $yObj = new YCoordinate($y, $this->rowObj);
+                $xObj = new XCoordinate($x, $this->colObj);
+
+                if ($this->boardObj->isSandwichedTarget($xObj, $yObj, $this->colObj)){
+                    echo $y . " " . $x . "\n";
+                }
+            }
+        }
+
     }
 
 }
 
 
-// 盤面の行数H、列数W、座標の数Nを取得する
-[$h, $w, $n] = fscanf(STDIN, "%d %d %d");
+// 盤面の行数H、列数Wを取得する
+[$h, $w] = fscanf(STDIN, "%d %d");
 
 // 盤面の行数
 $rowObj = new Row($h);
@@ -283,10 +371,10 @@ $colObj = new Col($w);
 $boardObj = new Board($rowObj);
 
 // 与えられる座標の総数
-$coordinateAmountObj = new CoordinateAmount($n, $rowObj, $colObj);
-$coordinateAmount = $coordinateAmountObj->getValue();
+// $coordinateAmountObj = new CoordinateAmount($n, $rowObj, $colObj);
+// $coordinateAmount = $coordinateAmountObj->getValue();
 
 // ボードの文字を出力する
-$drawBoardObj = new DrawBoard($coordinateAmountObj, $rowObj, $colObj, $boardObj);
-$drawBoardObj->exec();
+$getSandwichedCoordinateObj = new GetSandwichedCoordinate($rowObj, $colObj, $boardObj);
+$getSandwichedCoordinateObj->exec();
 ?>
