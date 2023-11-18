@@ -165,8 +165,8 @@ class Board {
     //     $this->replaceCoordinatesList = $replaceCoordinatesList;
     // }
 
-     // マスの両端がターゲット文字かどうか判定する
-     public function isSandwichedTarget(XCoordinate $xObj, YCoordinate $yObj, Row $rowObj): bool
+     // マスの上下両端がターゲット文字かどうか判定する
+     public function isSandwichedTargetTB(XCoordinate $xObj, YCoordinate $yObj, Row $rowObj): bool
      {
         // 上端のマスの場合
         if ($this->isTopEnd($yObj)) {
@@ -189,6 +189,86 @@ class Board {
             return true;
         }
         return false;
+     }
+
+     // マスの左右両端がターゲット文字かどうか判定する
+     public function isSandwichedTargetLR(XCoordinate $xObj, YCoordinate $yObj, Col $colObj)
+     {
+        // 左端のマスの場合
+        if ($this->isLeftEnd($xObj)) {
+            if ($this->isTargetRight($xObj, $yObj)) {
+                return true;
+            }
+            return false;
+        }
+
+        // 右端のマスの場合
+        if ($this->isRightEnd($xObj, $colObj)) {
+            if ($this->isTargetLeft($xObj, $yObj)) {
+                return true;
+            }
+            return false;
+        }
+
+        // 端のマス以外の場合
+        if ($this->isTargetLeft($xObj, $yObj) && $this->isTargetRight($xObj, $yObj)) {
+            return true;
+        }
+        return false;
+     }
+
+     // 左端のマスかどうか判定する
+     public function isLeftEnd(XCoordinate $xObj)
+     {
+        $x = $xObj->getValue();
+
+        if ($x === 0) {
+            return true;
+        }
+
+        return false;
+     }
+
+     // 右端のマスかどうか判定する
+     public function isRightEnd(XCoordinate $xObj, Col $colObj)
+     {
+        $x = $xObj->getValue();
+        $maxCol = $colObj->getValue();
+        $maxXValue = $maxCol - 1;
+
+        if ($x === $maxXValue) {
+            return true;
+        }
+
+        return false;
+     }
+
+     // 左隣のマスに書かれた文字が#かどうか判断する
+     public function isTargetLeft(XCoordinate $xObj, YCoordinate $yObj)
+     {
+        $x = $xObj->getValue();
+        $y = $yObj->getValue();
+
+        $leftX = $x - 1;
+
+        $leftTextObj =  $this->board[$y][$leftX];
+        $leftText = $leftTextObj->getValue();
+        
+        return $leftText === self::TARGET_TEXT;
+     }
+
+     // 右隣のマスに書かれた文字が#かどうか判断する
+     public function isTargetRight(XCoordinate $xObj, YCoordinate $yObj)
+     {
+        $x = $xObj->getValue();
+        $y = $yObj->getValue();
+
+        $rightX = $x + 1;
+
+        $rightTextObj =  $this->board[$y][$rightX];
+        $rightText = $rightTextObj->getValue();
+        
+        return $rightText === self::TARGET_TEXT;
      }
 
      // 上端のマスかどうか判定する
@@ -342,7 +422,7 @@ class GetSandwichedCoordinate
 
     public function exec(): void
     {
-        // ボードの各マスの両端が#なら座標を出力する
+        // ボードの各マスの上下左右が#なら座標を出力する
         $row = $this->rowObj->getValue();
         $col = $this->colObj->getValue();
 
@@ -351,7 +431,7 @@ class GetSandwichedCoordinate
                 $yObj = new YCoordinate($y, $this->rowObj);
                 $xObj = new XCoordinate($x, $this->colObj);
 
-                if ($this->boardObj->isSandwichedTarget($xObj, $yObj, $this->rowObj)){
+                if ($this->boardObj->isSandwichedTargetTB($xObj, $yObj, $this->rowObj) && $this->boardObj->isSandwichedTargetLR($xObj, $yObj, $this->colObj)){
                     echo $y . " " . $x . "\n";
                 }
             }
