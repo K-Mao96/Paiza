@@ -7,6 +7,10 @@
  * @link https://paiza.jp/works/mondai/a_rank_level_up_problems/a_rank_snake_move_step2/edit?language_uid=php
  */
 
+class CoordinateException extends Exception {}
+class MovingFrequencyException extends Exception {}
+class DirectionException extends Exception {}
+
 // 現在地クラス
 class Point
  {
@@ -18,10 +22,10 @@ class Point
     public function __construct(int $y, int $x)
     {
         if ($y < 0 || $x < 0) {
-            throw new RowAmoutException("座標には0以上を指定してください");
+            throw new CoordinateException("座標には0以上を指定してください");
         }
         if ($y > 100 || $x > 100) {
-            throw new RowAmoutException("座標には100以下を指定してください");
+            throw new CoordinateException("座標には100以下を指定してください");
         }
 
         $this->y = $y;
@@ -60,10 +64,10 @@ class MovingFrequency
     public function __construct(int $value)
     {
         if ($value < 0) {
-            throw new RowAmoutException("移動回数には0以上を指定してください");
+            throw new MovingFrequencyException("移動回数には0以上を指定してください");
         }
         if ($value > 100) {
-            throw new RowAmoutException("移動回数には100以下を指定してください");
+            throw new MovingFrequencyException("移動回数には100以下を指定してください");
         }
 
         $this->value = $value;
@@ -120,7 +124,7 @@ class Direction
 
             // いずれの方向でもない場合はエラーを出力
             default :
-                throw new RowAmoutException("移動方向にはN・S・E・Wのいずれかを指定してください");
+                throw new DirectionException("移動方向にはN・S・E・Wのいずれかを指定してください");
         }
     }
 
