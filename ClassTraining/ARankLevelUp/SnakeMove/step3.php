@@ -139,38 +139,26 @@ class Moving
         // 進行方向
         $direction = $this->directionObj->getValue();
 
+        // 移動距離
+        if ($direction === Direction::RIGHT) {
+            $distance = -1;
+        }
+        if ($direction === Direction::LEFT) {
+            $distance = 1;
+        }
+
         switch ($facing) {
-            case Facing::NORTH :
-                if ($direction === Direction::RIGHT) {
-                    $this->diffX = 1;
-                }
-                if ($direction === Direction::LEFT) {
-                    $this->diffX = -1;
-                }
-                break;
             case Facing::SOUTH :
-                if ($direction === Direction::RIGHT) {
-                    $this->diffX = -1;
-                }
-                if ($direction === Direction::LEFT) {
-                    $this->diffX = 1;
-                }
+                $this->diffX += $distance;
                 break;
             case Facing::WEST :
-                if ($direction === Direction::RIGHT) {
-                    $this->diffY = -1;
-                }
-                if ($direction === Direction::LEFT) {
-                    $this->diffY = 1;
-                }
+                $this->diffY += $distance;
                 break;
             case Facing::EAST :
-                if ($direction === Direction::RIGHT) {
-                    $this->diffY = 1;
-                }
-                if ($direction === Direction::LEFT) {
-                    $this->diffY = -1;
-                }
+                $this->diffY -= $distance;
+                break;
+            case Facing::NORTH :
+                $this->diffX -= $distance;
                 break;
         }
 
