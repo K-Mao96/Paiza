@@ -140,6 +140,7 @@ class Moving
         $direction = $this->directionObj->getValue();
 
         // 移動距離
+        // MEMO: 左へ進むことを1とすれば、右へ進むことは-1と表現できる
         if ($direction === Direction::RIGHT) {
             $distance = -1;
         }
