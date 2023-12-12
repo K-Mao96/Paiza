@@ -178,7 +178,7 @@ class Moving
 }
 
 
-// 標準入力から、Y座標、X座標、移動の回数を取得する
+// 標準入力から、Y座標、X座標、向いている方角を取得する
 [$startY, $startX, $facing] = fscanf(STDIN, "%d %d %s");
 
 [$direction] = fscanf(STDIN, "%s");
